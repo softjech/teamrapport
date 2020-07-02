@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1055474689088",
+    "firebase_url": "https://rapport-bac85.firebaseio.com",
+    "project_id": "rapport-bac85",
+    "storage_bucket": "rapport-bac85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055474689088:android:f19d49b993a35c78056ba5",
+        "android_client_info": {
+          "package_name": "com.softjectico.teamrapport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055474689088-dl5jmio096492hscutr1g71n7urtgm0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softjectico.teamrapport",
+            "certificate_hash": "89d9f5bff3e4359ddc1077ff5a205ecba3b650fb"
+          }
+        },
+        {
+          "client_id": "1055474689088-5p2s63565f0ckql9fbsd1itp07iusddt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm-0QCbiyM9iJyMRpyhONrO8rHLJm9iLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055474689088-5p2s63565f0ckql9fbsd1itp07iusddt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
