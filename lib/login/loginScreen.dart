@@ -120,7 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         : (size.width / 2) - 45,
                     child: FlatButton(
                       onPressed: () {
-                        number = '+91' + number;
                         codeSent
                             ? AuthService().signInWithOtp(smsCode, otp)
                             : verify(number);
@@ -145,6 +144,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //Code to verify number
   Future<void> verify(phoneNo) async {
+    phoneNo = '+91' + phoneNo;
+    print(phoneNo);
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
       AuthService().signIn(authResult);
     };
@@ -154,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
       this.otp = verId;
-      print(otp);
       setState(() {
         codeSent = true; //In case number is not in the mobile
       });
