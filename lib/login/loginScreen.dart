@@ -3,10 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import '../AuthService.dart';
 import '../constants.dart';
 
 String number, otp;
+String myNumber = ' ';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -145,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
   //Code to verify number
   Future<void> verify(phoneNo) async {
     phoneNo = '+91' + phoneNo;
-    print(phoneNo);
+    myNumber = phoneNo;
+    SharedPrefFunction().saveNumberPreference(myNumber);
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
       AuthService().signIn(authResult);
     };
@@ -162,7 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
       this.otp = verId;
-      print(otp);
     };
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNo,
