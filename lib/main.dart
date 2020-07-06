@@ -1,10 +1,9 @@
 import 'package:flare_splash_screen/flare_splash_screen.dart';
-import 'package:teamrapport/home/homePage.dart';
-import 'package:teamrapport/login/loginScreen.dart';
+import 'package:flutter/material.dart';
 import 'package:teamrapport/widgets/onBoardingScreen.dart';
 import 'AuthService.dart';
-
-import 'package:flutter/material.dart';
+import 'home/homeScreen.dart';
+import 'login/loginScreen.dart';
 
 void main() {
   runApp(MyApp());

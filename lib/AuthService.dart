@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:teamrapport/home/homePage.dart';
+import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/widgets/onBoardingScreen.dart';
 
 class AuthService {
