@@ -25,7 +25,7 @@ class AuthService {
 
   signIn(AuthCredential authCredential) {
     FirebaseAuth.instance.signInWithCredential(authCredential);
-    handleAuth();
+//    handleAuth();
     print(authCredential);
   }
 
