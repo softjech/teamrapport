@@ -1,14 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-const kTextInputBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.all(
-    Radius.circular(30),
+
+const themeColor = Color.fromRGBO(0, 136, 170, 1);
+
+const leftTextInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.only(
+    topLeft: Radius.circular(10),
+    bottomLeft: Radius.circular(10),
   ),
-  borderSide: BorderSide(
-      style: BorderStyle.solid,
-      color: CupertinoDynamicColor.withBrightness(
-          color: Color(0xFF1976D2), darkColor: Color(0xFF0D47A1))),
+);
+
+const rightTextInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.only(
+    topRight: Radius.circular(10),
+    bottomRight: Radius.circular(10),
+  ),
+);
+
+const completeInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.all(
+    Radius.circular(10),
+  ),
 );
 
 const kTextStyle = TextStyle(
