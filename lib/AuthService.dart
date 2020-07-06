@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/home/homePage.dart';
+import 'package:teamrapport/widgets/onBoardingScreen.dart';
 
 class AuthService {
   handleAuth() {
@@ -9,13 +10,9 @@ class AuthService {
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Scaffold(
-              body: Container(
-                child: FlatButton.icon(onPressed: signOut, icon: Icon(Icons.clear),label: Text('Sign Out'),),
-              ),
-            );
+            return HomeScreen();
           } else {
-            return LoginScreen();
+            return OnboardingScreen();
           }
         });
   }
@@ -28,10 +25,11 @@ class AuthService {
 
   signIn(AuthCredential authCredential) {
     FirebaseAuth.instance.signInWithCredential(authCredential);
+    handleAuth();
     print(authCredential);
   }
 
-  signOut() {
+  static signOut() {
     FirebaseAuth.instance.signOut();
   }
 }
