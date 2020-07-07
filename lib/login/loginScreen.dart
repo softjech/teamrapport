@@ -191,7 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             createAlertDialog(context);
                             codeSent
-                                ? AuthService().signInWithOtp(smsCode, otp)
+                                ? AuthService()
+                                    .signInWithOtp(smsCode, otp, context)
                                 : verify(number);
                           },
                           child: const Text(
@@ -290,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   print('CodeSent' + codeSent.toString());
                   codeSent
-                      ? AuthService().signInWithOtp(smsCode, code.text)
+                      ? AuthService().signInWithOtp(code.text, otp, context)
                       : verify(number);
                   //Navigator.pop(context);
                 },
@@ -315,6 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
     phoneNo = '+91' + phoneNo;
     myNumber = phoneNo;
     SharedPrefFunction().saveNumberPreference(myNumber);
+
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
       AuthService().signIn(authResult);
     };
@@ -324,7 +326,6 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
       this.otp = verId;
-      print(otp + ' hi');
       setState(() {
         codeSent = true; //In case number is not in the mobile
       });
@@ -332,11 +333,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
       this.otp = verId;
-      print(otp + 'hi');
     };
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNo,
-        timeout: Duration(seconds: 10),
+        timeout: Duration(seconds: 30),
         verificationCompleted: verified,
         verificationFailed: verificationFailed,
         codeSent: smsSent,

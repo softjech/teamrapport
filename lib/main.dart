@@ -1,5 +1,6 @@
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:teamrapport/checkUser.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/widgets/onBoardingScreen.dart';
 import 'AuthService.dart';
@@ -65,6 +66,7 @@ class _MyAppState extends State<MyApp> {
        */
       routes: {
         LoginScreen.loginRoute: (ctx) => LoginScreen(),
+        CheckUser.checkRoute: (ctx) => CheckUser(),
         HomeScreen.homeRoute: (ctx) => HomeScreen(),
         OnboardingScreen.onBoardRoute: (ctx) => OnboardingScreen(),
       },

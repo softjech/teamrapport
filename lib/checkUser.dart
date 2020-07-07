@@ -12,6 +12,7 @@ bool isLoading = true;
 bool dataExists = false;
 
 class CheckUser extends StatefulWidget {
+  static const String checkRoute = '/login/checkUser';
   @override
   _CheckUserState createState() => _CheckUserState();
 }

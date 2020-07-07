@@ -61,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 color: Colors.grey.withOpacity(0.1),
                 border: Border(
                   top: BorderSide(
-                    color: Colors.black45 ,
+                    color: Colors.black45,
                   ),
                 ),
               ),
@@ -77,7 +77,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     },
                     child: Text(
                       'SKIP',
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700,),
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   Row(
@@ -96,7 +98,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     },
                     child: Text(
                       'NEXT',
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w700,),
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -104,7 +108,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             )
           : InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(LoginScreen.loginRoute);
+                Navigator.of(context)
+                    .pushReplacementNamed(LoginScreen.loginRoute);
               },
               child: Container(
                 height: 55,

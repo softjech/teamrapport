@@ -6,8 +6,6 @@ import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/widgets/onBoardingScreen.dart';
 import 'main.dart';
-//import 'package:teamrapport/home/homeScreen.dart';
-//import 'package:teamrapport/widgets/onBoardingScreen.dart';
 
 class AuthService {
   handleAuth() {
@@ -26,18 +24,19 @@ class AuthService {
         });
   }
 
-  signInWithOtp(smsCode, verId) {
-    print('signInwithOtp');
+  signInWithOtp(smsCode, verId, context) {
     AuthCredential authCredential = PhoneAuthProvider.getCredential(
         verificationId: verId, smsCode: smsCode);
-    print('Hello   ' + authCredential.toString());
     signIn(authCredential);
+    FirebaseAuth.instance.currentUser().then((user) {
+      if (user != null) {
+        Navigator.pushReplacementNamed(context, CheckUser.checkRoute);
+      }
+    });
   }
 
   signIn(AuthCredential authCredential) {
-    print('signIn ' + authCredential.toString());
     FirebaseAuth.instance.signInWithCredential(authCredential);
-//    handleAuth();
   }
 
   signOut() {
