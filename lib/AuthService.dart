@@ -12,7 +12,6 @@ class AuthService {
     return StreamBuilder(
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (context, snapshot) {
-          print(isLogin.toString() + 'isLogin');
           if (isLogin == null) {
             return OnboardingScreen();
           } else if (snapshot.hasData) {
