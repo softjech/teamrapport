@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 const themeColor = Color.fromRGBO(0, 136, 170, 1);
 
 const leftTextInputBorder = OutlineInputBorder(
@@ -36,4 +35,13 @@ const kLabelStyle = TextStyle(
   fontFamily: 'DM Mono',
   fontWeight: FontWeight.bold,
   decoration: TextDecoration.none,
+);
+const kTextInputBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.all(
+    Radius.circular(30),
+  ),
+  borderSide: BorderSide(
+      style: BorderStyle.solid,
+      color: CupertinoDynamicColor.withBrightness(
+          color: Color(0xFF1976D2), darkColor: Color(0xFF0D47A1))),
 );

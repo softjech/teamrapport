@@ -4,10 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import '../AuthService.dart';
 import '../constants.dart';
 
 String number, otp;
+String myNumber = ' ';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -286,10 +288,12 @@ class _LoginScreenState extends State<LoginScreen> {
             actions: <Widget>[
               RaisedButton(
                 onPressed: () {
-                  AuthService().signInWithOtp(smsCode, otp);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  },
+                  print('CodeSent' + codeSent.toString());
+                  codeSent
+                      ? AuthService().signInWithOtp(smsCode, code.text)
+                      : verify(number);
+                  //Navigator.pop(context);
+                },
                 child: const Text(
                   'Verify',
                   style: TextStyle(
@@ -309,18 +313,18 @@ class _LoginScreenState extends State<LoginScreen> {
   //Code to verify number
   Future<void> verify(phoneNo) async {
     phoneNo = '+91' + phoneNo;
-
-//    print(phoneNo);
+    myNumber = phoneNo;
+    SharedPrefFunction().saveNumberPreference(myNumber);
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
       AuthService().signIn(authResult);
     };
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
-      print('${authException.message}');
+      print('Hi  Rapport ${authException.message}');
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
       this.otp = verId;
-      print(otp);
+      print(otp + ' hi');
       setState(() {
         codeSent = true; //In case number is not in the mobile
       });
@@ -328,11 +332,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final PhoneCodeAutoRetrievalTimeout autoTimeout = (String verId) {
       this.otp = verId;
-      print(otp);
+      print(otp + 'hi');
     };
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNo,
-        timeout: Duration(seconds: 5),
+        timeout: Duration(seconds: 10),
         verificationCompleted: verified,
         verificationFailed: verificationFailed,
         codeSent: smsSent,
