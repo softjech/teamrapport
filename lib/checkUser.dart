@@ -4,13 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teamrapport/student/studentInfo.dart';
-import 'package:teamrapport/constants.dart';
-import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/teacher/teacherDetails.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
-
+import 'AuthService.dart';
 import 'loading/progress.dart';
 
 final usersRef = Firestore.instance.collection('users');
@@ -50,7 +48,21 @@ class _CheckUserState extends State<CheckUser> {
 
   homePage(BuildContext context) {
     if (dataExists) {
-      return Navigator.of(context).pushReplacementNamed(HomeScreen.homeRoute);
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            child: FlatButton.icon(
+              onPressed: () {
+                setState(() {
+                  AuthService().signOut();
+                });
+              },
+              icon: Icon(Icons.clear),
+              label: Text('Sign Out'),
+            ),
+          ),
+        ),
+      );
     } else {
       return getInfoPage();
     }
@@ -105,9 +117,6 @@ class _CheckUserState extends State<CheckUser> {
                           onTap: () {
                             Navigator.pushReplacementNamed(
                                 context, TeacherDetailsScreen.teacherDetailsRoute);
-//                            setState(() {
-//                              dataExists = true;
-//                            });
                           },
                           desc: 'Reach out to new students.',
                           color: Colors.red,
@@ -120,9 +129,6 @@ class _CheckUserState extends State<CheckUser> {
                           onTap: () {
                             Navigator.pushReplacementNamed(
                                 context, StudentInfo.studentRoute);
-                            setState(() {
-                              dataExists = true;
-                            });
                           },
                           desc: 'Rate teachers and find the best for you.',
                           color: Colors.blue,

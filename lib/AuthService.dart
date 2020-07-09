@@ -12,14 +12,16 @@ class AuthService {
     return StreamBuilder(
         stream: FirebaseAuth.instance.onAuthStateChanged,
         builder: (context, snapshot) {
-          if (isLogin == null) {
-            return OnboardingScreen();
-          } else if (snapshot.hasData) {
+//          if (isLogin == null) {
+//            return OnboardingScreen();
+//          }
+          if (snapshot.hasData) {
             Navigator.maybePop(context);
             SharedPrefFunction().saveLoginPreference();
             return CheckUser();
           }
-          return LoginScreen();
+          else{
+          return LoginScreen();}
         });
   }
 

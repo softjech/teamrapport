@@ -7,6 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
+import 'package:teamrapport/home/homeScreen.dart';
+import 'package:teamrapport/loading/progress.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import '../checkUser.dart';
 import '../constants.dart';
@@ -25,9 +27,10 @@ class _StudentInfoState extends State<StudentInfo> {
   TextEditingController countryController = TextEditingController();
   TextEditingController mobileNoController = TextEditingController();
   File file;
-
+  bool isLoading=false;
   @override
   void initState() {
+    getUserLocation();
     mobileNoController.text = myNumber;
     countryController.text = 'India';
     super.initState();
@@ -180,6 +183,9 @@ class _StudentInfoState extends State<StudentInfo> {
   }
 
   createFirebase() async {
+    setState(() {
+      isLoading = true;
+    });
     await handleImage();
     DocumentReference docRef = usersRef.document(myNumber);
     await docRef.setData({
@@ -195,15 +201,16 @@ class _StudentInfoState extends State<StudentInfo> {
       'city': cityController.text,
       'pincode': pincodeController.text,
     });
-    Navigator.pop(context);
     setState(() {
+      isLoading = false;
       file = null;
     });
+    Navigator.pushReplacementNamed(context, HomeScreen.homeRoute);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ? circularProgress() : Scaffold(
       body: Container(
         child: ListView(
           children: <Widget>[
