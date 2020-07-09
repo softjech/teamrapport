@@ -58,12 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ? Container(
               height: 55,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                border: Border(
-                  top: BorderSide(
-                    color: Colors.black45,
-                  ),
-                ),
+                color: Colors.white,
               ),
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Row(

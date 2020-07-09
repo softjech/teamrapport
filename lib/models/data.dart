@@ -57,6 +57,15 @@ class SliderModel {
     sliderModel.title = 'Easy';
     sliderModel.desc = 'Intuitive  GUI design makes experience awesome.';
     slides.add(sliderModel);
+
+
+    sliderModel = SliderModel();
+
+    //5
+    sliderModel.imagePath = 'assets/images/vectors/5.png';
+    sliderModel.title = 'Audience';
+    sliderModel.desc = 'If you are a teacher. You can reach out to a much great audience.';
+    slides.add(sliderModel);
     return slides;
   }
 }

@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ? Positioned(
                   bottom: 0,
                   child: Image.asset(
-                    'assets/images/background.jpg',
+                    'assets/images/bg_book_plant.jpg',
                     width: size.width,
                     fit: BoxFit.fitWidth,
                   ),
@@ -117,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
 //                        fontWeight: FontWeight.w300,
 //                      ),
                       ),
-
                       const Text(
                         'Sign in to continue with your mobile number.',
                         style: TextStyle(
@@ -125,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.black54,
                         ),
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
@@ -170,7 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
@@ -184,60 +181,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 30,
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 50,
-                        child: RaisedButton(
-                          onPressed: () {
-                            createAlertDialog(context);
-                            codeSent
-                                ? AuthService()
-                                    .signInWithOtp(smsCode, otp, context)
-                                : verify(number);
-                          },
-                          child: const Text(
-                            'Get OTP',
-                            style: TextStyle(
-                              color: Colors.white,
-//                            fontWeight: FontWeight.bold,
-                            ),
-                          ),
-//                          color: Color.fromRGBO(119, 205, 208, 1),
-                          color: themeColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-//                          side: BorderSide(color: Colors.black),
-                          ),
-                        ),
+                      myRaisedButton(
+                        label: 'Get OTP',
+                        onPressed: () {
+                          createAlertDialog(context);
+//                            codeSent
+//                                ? AuthService()
+//                                    .signInWithOtp(smsCode, otp, context)
+//                                : verify(number);
+                          AuthService().signInWithOtp(smsCode, otp, context);
+                          verify(number);
+                        },
                       ),
-
-//                    Container(
-//                      width: double.infinity,
-//                      padding: EdgeInsets.symmetric(horizontal: 15),
-//                      child: TextField(
-//                        onChanged: (value) {
-//                          smsCode = value;
-//                        },
-//                        controller: code,
-//                        decoration: InputDecoration(
-//                          hintText: 'OTP',
-//                          hintStyle: TextStyle(fontFamily: 'DM Mono'),
-//                          enabledBorder: kTextInputBorder,
-//                          focusedBorder: kTextInputBorder,
-//                          prefixIcon: Icon(
-//                            Icons.arrow_forward_ios,
-//                            color: Colors.black,
-//                          ),
-//                          labelText: 'OTP',
-//                          labelStyle: TextStyle(
-//                              color: Colors.black,
-//                              fontFamily: 'DM Mono',
-//                              fontWeight: FontWeight.bold),
-//                        ),
-//                        keyboardType: TextInputType.number,
-//                      ),
-//                    ),
-//
                     ],
                   ),
                 ),
@@ -252,63 +207,77 @@ class _LoginScreenState extends State<LoginScreen> {
   //Function to create pop-up menu here
   createAlertDialog(BuildContext context) {
     return showDialog(
-        context: context,
-        builder: (context) {
+      context: context,
+      builder: (context) {
 //          verify(number);
-          return AlertDialog(
-            title: Text('OTP will be automatically read.'),
-            content: Container(
-              height: 100,
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: code,
-                    keyboardType: TextInputType.numberWithOptions(
-                        signed: false, decimal: false),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: completeInputBorder,
-                      focusedBorder: completeInputBorder,
-                      hintText: '123456',
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Container(
+            padding: EdgeInsets.all(15),
+            height: 250,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Enter the OTP received.',
+                      style: heading2,
                     ),
                   ),
-                  SizedBox(
-                    height: 15,
+                ),
+                TextField(
+                  controller: code,
+                  keyboardType: TextInputType.numberWithOptions(
+                      signed: false, decimal: false),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(15),
+                    enabledBorder: completeInputBorder,
+                    focusedBorder: completeInputBorder,
+                    hintText: '123456',
                   ),
-                  Text(
-                    'In case you have given a different number. Enter the OTP received there.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              RaisedButton(
-                onPressed: () {
-                  print('CodeSent' + codeSent.toString());
-                  codeSent
-                      ? AuthService().signInWithOtp(code.text, otp, context)
-                      : verify(number);
-                  //Navigator.pop(context);
-                },
-                child: const Text(
-                  'Verify',
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'In case you have given a different number. Enter the OTP received there.',
                   style: TextStyle(
-                    color: Colors.white,
+                    fontSize: 12,
+                    color: Colors.black54,
                   ),
                 ),
-                color: themeColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-            ],
-          );
-        });
+                Container(
+                  height: 50,
+                  //width: 200,
+                  child: FlatButton(
+                    onPressed: () {
+                      print('CodeSent' + codeSent.toString());
+                      codeSent
+                          ? AuthService().signInWithOtp(code.text, otp, context)
+                          : verify(number);
+                      //Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Verify',
+                      style: TextStyle(
+                        color: themeColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   //Code to verify number

@@ -29,7 +29,7 @@ class AuthService {
     signIn(authCredential);
     FirebaseAuth.instance.currentUser().then((user) {
       if (user != null) {
-        Navigator.pushReplacementNamed(context, CheckUser.checkRoute);
+        Navigator.popAndPushNamed(context, CheckUser.checkRoute);
       }
     });
   }

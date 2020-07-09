@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:teamrapport/UserInfo/studentInfo.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:teamrapport/student/studentInfo.dart';
+import 'package:teamrapport/constants.dart';
 import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
+import 'package:teamrapport/teacher/teacherDetails.dart';
+import 'package:teamrapport/widgets/boxWidget.dart';
 
 import 'loading/progress.dart';
 
@@ -15,6 +20,7 @@ bool dataExists = false;
 
 class CheckUser extends StatefulWidget {
   static const String checkRoute = '/login/checkUser';
+
   @override
   _CheckUserState createState() => _CheckUserState();
 }
@@ -51,37 +57,79 @@ class _CheckUserState extends State<CheckUser> {
   }
 
   getInfoPage() {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
               children: <Widget>[
-                Text('Who are you?'),
-                SizedBox(
-                  height: 40,
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: Image.asset(
+                    'assets/images/bg_diary.png',
+                    width: size.width * 0.8,
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
-                RaisedButton(
-                  child: Text('Teacher'),
-                  onPressed: () {
-                    print('Teacher');
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                RaisedButton(
-                  child: Text('Student'),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return StudentInfo();
-                    }));
-                    setState(() {
-                      dataExists = true;
-                    });
-                  },
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Who are you?',
+                      style: GoogleFonts.montserrat(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+//                    SizedBox(
+//                      height: 10,
+//                    ),
+//                    Padding(
+//                      padding: const EdgeInsets.symmetric(horizontal:10.0),
+//                      child: Text(
+//                        'You can use Rapport as a Student or as a teacher.',
+//                        style: subhead2,
+//                      ),
+//                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        BoxWidget(
+                          title: 'Teacher',
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                                context, TeacherDetailsScreen.teacherDetailsRoute);
+//                            setState(() {
+//                              dataExists = true;
+//                            });
+                          },
+                          desc: 'Reach out to new students.',
+                          color: Colors.red,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        BoxWidget(
+                          title: 'Student',
+                          onTap: () {
+                            Navigator.pushReplacementNamed(
+                                context, StudentInfo.studentRoute);
+                            setState(() {
+                              dataExists = true;
+                            });
+                          },
+                          desc: 'Rate teachers and find the best for you.',
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
