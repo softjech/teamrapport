@@ -36,12 +36,12 @@ class _CheckUserState extends State<CheckUser> {
     //DocumentSnapshot doc = await usersRef.document(myNumber).get();
     if (myNumber != null) {
       setState(() {
-       // dataExists = true;
+        dataExists = true;
         isLoading = false;
       });
     } else {
       setState(() {
-        //dataExists = false;
+        dataExists = false;
         isLoading = false;
       });
     }
