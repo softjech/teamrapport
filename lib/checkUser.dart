@@ -9,7 +9,7 @@ import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/teacher/teacherDetails.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
-//import 'AuthService.dart';
+import 'AuthService.dart';
 import 'loading/progress.dart';
 
 final usersRef = Firestore.instance.collection('users');
@@ -48,17 +48,7 @@ class _CheckUserState extends State<CheckUser> {
   }
 
   homePage(BuildContext context) {
-    return FutureBuilder(
-      future: usersRef.document(myNumber).get(),
-      builder: (context,snapshot){
-        if(snapshot.hasData){
-          return HomeScreen();
-        }
-        else{
-        return getInfoPage();}
-      },
-    );
-    /*if (dataExists) {
+    if (dataExists) {
       return Scaffold(
         body: SafeArea(
           child: Container(
@@ -76,7 +66,7 @@ class _CheckUserState extends State<CheckUser> {
       );
     } else {
       return getInfoPage();
-    }*/
+    }
   }
 
   getInfoPage() {
