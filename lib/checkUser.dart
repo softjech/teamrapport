@@ -3,12 +3,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/teacher/teacherDetails.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
-import 'AuthService.dart';
+//import 'AuthService.dart';
 import 'loading/progress.dart';
 
 final usersRef = Firestore.instance.collection('users');
@@ -32,22 +33,32 @@ class _CheckUserState extends State<CheckUser> {
 
   checkUser() async {
     myNumber = await SharedPrefFunction().getNumberPreference();
-    DocumentSnapshot doc = await usersRef.document(myNumber).get();
-    if (doc.exists) {
+    //DocumentSnapshot doc = await usersRef.document(myNumber).get();
+    if (myNumber != null) {
       setState(() {
-        dataExists = true;
+       // dataExists = true;
         isLoading = false;
       });
     } else {
       setState(() {
-        dataExists = false;
+        //dataExists = false;
         isLoading = false;
       });
     }
   }
 
   homePage(BuildContext context) {
-    if (dataExists) {
+    return FutureBuilder(
+      future: usersRef.document(myNumber).get(),
+      builder: (context,snapshot){
+        if(snapshot.hasData){
+          return HomeScreen();
+        }
+        else{
+        return getInfoPage();}
+      },
+    );
+    /*if (dataExists) {
       return Scaffold(
         body: SafeArea(
           child: Container(
@@ -65,7 +76,7 @@ class _CheckUserState extends State<CheckUser> {
       );
     } else {
       return getInfoPage();
-    }
+    }*/
   }
 
   getInfoPage() {
@@ -115,7 +126,7 @@ class _CheckUserState extends State<CheckUser> {
                         BoxWidget(
                           title: 'Teacher',
                           onTap: () {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                                 context, TeacherDetailsScreen.teacherDetailsRoute);
                           },
                           desc: 'Reach out to new students.',
@@ -127,7 +138,7 @@ class _CheckUserState extends State<CheckUser> {
                         BoxWidget(
                           title: 'Student',
                           onTap: () {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                                 context, StudentInfo.studentRoute);
                           },
                           desc: 'Rate teachers and find the best for you.',
