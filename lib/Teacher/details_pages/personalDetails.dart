@@ -1,14 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:teamrapport/constants.dart';
+import 'package:intl/intl.dart';
 
 class PersonalDetails extends StatefulWidget {
   String _firstName;
   String _lastName;
   String _popularName;
   String _emailId;
-  String _about;
   DateTime _dateOfBirth;
-  int _sex; // 0 - male 1 - female 2 - other
+  int _sex = 0; // 0 - male 1 - female 2 - other
+  int _aadharNumber;
 
   @override
   _PersonalDetailsState createState() => _PersonalDetailsState();
@@ -16,6 +18,38 @@ class PersonalDetails extends StatefulWidget {
 
 class _PersonalDetailsState extends State<PersonalDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _dateError;
+
+//  var _genderMap = {
+//    0 : 'Male',
+//    1 : 'Female',
+//    2 : 'Other',
+//  };
+  bool _profileSet = false;
+
+  Widget _getProfilePic() {
+    return Material(
+      elevation: 10,
+      shape: CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: Center(
+        child: GestureDetector(
+          child: CircleAvatar(
+            radius: MediaQuery.of(context).size.width * 0.2,
+            backgroundImage: _profileSet
+                ? NetworkImage('https://via.placeholder.com/150')
+                : AssetImage(
+                    'assets/images/default.png',
+                  ),
+            backgroundColor: Colors.transparent,
+          ),
+          onTap: () {
+            //Implement setting up of profile Image here.
+          },
+        ),
+      ),
+    );
+  }
 
   Widget _buildFirstName() {
     return myFromField(
@@ -24,6 +58,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         if (value.isEmpty) {
           return 'First name is required';
         }
+        return null;
       },
       onSaved: (String value) {
         widget._firstName = value;
@@ -38,6 +73,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         if (value.isEmpty) {
           return 'Last name is required.';
         }
+        return null;
       },
       onSaved: (String value) {
         widget._lastName = value;
@@ -52,12 +88,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         myFromField(
           label: 'Popular Name',
           onSaved: (String value) {
-            widget._lastName = value;
+            widget._popularName = value;
           },
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 10.0, bottom: 10,),
-          child: Text('This is a name that you are most commonly know by (if any).', style: subhead1,),
+          padding: const EdgeInsets.only(
+            left: 10.0,
+            bottom: 10,
+          ),
+          child: Text(
+            'This is a name that you are most commonly know by (if any).',
+            style: subhead1,
+          ),
         )
       ],
     );
@@ -71,23 +113,192 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         if (value.isEmpty) {
           return 'Email is required.';
         }
+        if (!RegExp(
+                r'^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$')
+            .hasMatch(value)) {
+          return 'invalid email address';
+        }
+        return null;
       },
       onSaved: (String value) {
-        widget._lastName = value;
+        widget._emailId = value;
       },
     );
   }
 
+  List<DropdownMenuItem<String>> _dropDownItems = [
+    DropdownMenuItem<String>(
+      value: '0',
+      child: Center(
+        child: Text('Male'),
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: '1',
+      child: Center(
+        child: Text('Female'),
+      ),
+    ),
+    DropdownMenuItem<String>(
+      value: '2',
+      child: Center(
+        child: Text('Other'),
+      ),
+    ),
+  ];
+
   Widget _buildSex() {
-    return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: Center(
+              child: Text(
+                'Sex',
+                style: subhead2.copyWith(
+                    color: Colors.black54, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 3,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.black38)),
+              child: Center(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  items: _dropDownItems,
+                  value: '${widget._sex}',
+                  //This line here could break, if that happens. The value in the sex field will be wrong
+                  /*
+                  Sol: uncomment the _genderMap above and in the value add the following code
+                  _genderMap[widget._sex]
+                   */
+                  hint: Text('Select gender'),
+                  onChanged: (value) {
+                    setState(() {
+                      widget._sex = int.tryParse(value);
+                    });
+                  },
+                  style: subhead2,
+                  underline: Container(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildDob() {
-    return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(
+                flex: 1,
+                child: Center(
+                  child: Text(
+                    'Date of Birth',
+                    style: subhead2.copyWith(
+                        color: Colors.black54, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: widget._dateOfBirth == null
+                          ? DateTime.now()
+                          : widget._dateOfBirth,
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    ).then((value) {
+                      setState(() {
+                        widget._dateOfBirth = value;
+                      });
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black38)),
+                    child: Center(
+                      child: Text(
+                        widget._dateOfBirth != null
+                            ? DateFormat('dd-MM-yyyy')
+                                .format(widget._dateOfBirth)
+                            : 'Select date',
+                        style: subhead2.copyWith(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          _dateError !=null ? Text(
+            _dateError,
+            style: subhead1.copyWith(
+              color: Colors.redAccent,
+            ),
+          ):
+          Container(),
+        ],
+      ),
+    );
+    ;
   }
 
-  Widget _buildAbout() {
-    return null;
+  Widget _buildAadhar() {
+    return Row(
+      children: <Widget>[
+        Flexible(
+          flex: 8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
+            child: TextFormField(
+              keyboardType: TextInputType.phone,
+              maxLengthEnforced: true,
+              maxLength: 10,
+              decoration: myInputDecoration(label: 'Aadhar Number'),
+              //validator: validator,
+              onSaved: (String value) {
+                widget._aadharNumber = int.tryParse(value);
+              },
+            ),
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Column(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.info_outline),
+                onPressed: () {},
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -104,12 +315,20 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(10.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: ListView(
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            shrinkWrap: true,
             children: <Widget>[
+              SizedBox(
+                height: 40,
+              ),
+              _getProfilePic(),
+              SizedBox(
+                height: 60,
+              ),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -120,18 +339,33 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                 ],
               ),
-            _buildPopularName(),
-//            _buildDob(),
-//            _buildSex(),
-            _buildEmail(),
+              _buildPopularName(),
+              _buildSex(),
+              _buildDob(),
+              _buildEmail(),
+              SizedBox(
+                height: 30,
+              ),
+
 //            _buildAbout(),
+//              _buildAadhar(),
               myRaisedButton(
                 label: 'Next',
                 onPressed: () {
-                  if(!_formKey.currentState.validate()){
+                  if (!_formKey.currentState.validate()) {
                     return;
                   }
+                  if (widget._dateOfBirth == null) {
+                    setState(() {
+                      _dateError = 'Please set date first.';
+                    });
+                  }
                   _formKey.currentState.save();
+                  print(widget._firstName + " " + widget._lastName);
+                  print(widget._popularName);
+                  print(widget._emailId);
+                  print(widget._sex);
+                  print(widget._aadharNumber);
                 },
               ),
             ],

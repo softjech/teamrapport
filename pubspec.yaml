@@ -27,6 +27,9 @@ dependencies:
   #design specific dependencies
   flare_splash_screen: ^3.0.1
   google_fonts: ^1.1.0
+  overlay_container: ^0.0.4+1
+  #for formatting date-time
+  intl: ^0.15.8
 
 
 

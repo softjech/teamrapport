@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: Color(0xFFE3F2FD),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+//        pageTransitionsTheme:
       ),
       home: SplashScreen.navigate(
         name: 'assets/splash.flr',

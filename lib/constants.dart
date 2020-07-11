@@ -74,7 +74,7 @@ const kTextInputBorder = OutlineInputBorder(
 );
 
 //Custom Input decoration
-InputDecoration myInputDecoration({ label, hint}){
+InputDecoration myInputDecoration({label, hint}) {
   return InputDecoration(
     isDense: true,
     contentPadding: EdgeInsets.all(15),
@@ -99,11 +99,18 @@ Widget myTextField({onChanged, label, keyboardType}) {
 }
 
 //Customized Form Field
-Widget myFromField({label, hint, validator, onSaved}){
+Widget myFromField(
+    {label, hint, validator, onSaved, keyBoardType: TextInputType.text}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical:10.0, horizontal: 8),
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
     child: TextFormField(
-      decoration: myInputDecoration(label : label, hint: hint),
+      keyboardType: keyBoardType,
+      decoration: myInputDecoration(
+
+        label: label,
+        hint: hint,
+
+      ),
       validator: validator,
       onSaved: onSaved,
     ),
@@ -111,9 +118,9 @@ Widget myFromField({label, hint, validator, onSaved}){
 }
 
 //Customized raisedButton
-Widget myRaisedButton({onPressed, label}){
- return Container(
-   margin: EdgeInsets.all(10),
+Widget myRaisedButton({onPressed, label}) {
+  return Container(
+    margin: EdgeInsets.all(10),
     width: double.infinity,
     height: 50,
     child: RaisedButton(
@@ -134,4 +141,3 @@ Widget myRaisedButton({onPressed, label}){
     ),
   );
 }
-
