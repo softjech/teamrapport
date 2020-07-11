@@ -15,19 +15,29 @@ import '../constants.dart';
 
 class StudentInfo extends StatefulWidget {
   static const String studentRoute = 'onboarding/login/student';
+
+  String _firstName;
+  String _lastName;
+  String _emailId;
+  String _highestEducation;
+  String _mediaUrl;
+
   @override
   _StudentInfoState createState() => _StudentInfoState();
 }
 
 class _StudentInfoState extends State<StudentInfo> {
-  String firstName = ' ', lastName = ' ', email = ' ', mediaUrl = ' ';
+  //Input form key
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   TextEditingController mobileNoController = TextEditingController();
   File file;
-  bool isLoading=false;
+  bool isLoading = false;
+
   @override
   void initState() {
     getUserLocation();
@@ -83,32 +93,33 @@ class _StudentInfoState extends State<StudentInfo> {
       builder: (context) {
         return SimpleDialog(
           elevation: 50,
-          backgroundColor: Color(0xFF424242),
+          backgroundColor: Colors.white,
           //contentPadding: EdgeInsets.all(20.0),
-          titlePadding: EdgeInsets.only(top: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          titlePadding: EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           title: Center(
-              child: Text(
-            'Upload Profile Picture',
-            style: TextStyle(color: Colors.white, fontSize: 30.0),
-          )),
+            child: Text(
+              'Upload Profile Picture',
+              style: heading2,
+            ),
+          ),
           children: <Widget>[
             SimpleDialogOption(
               child: Row(
                 children: <Widget>[
                   Icon(
-                    CupertinoIcons.photo_camera,
-                    color: Colors.white,
+                    Icons.camera_alt,
+                    color: Colors.black54,
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
-                  Text('Photo with Camera',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      )),
+                  Text(
+                    'Photo with Camera',
+                    style: subhead2,
+                  ),
                 ],
               ),
               onPressed: handleTakePhoto,
@@ -119,35 +130,25 @@ class _StudentInfoState extends State<StudentInfo> {
                 children: <Widget>[
                   Icon(
                     Icons.image,
-                    color: Colors.white,
+                    color: Colors.black54,
                   ),
                   SizedBox(
                     width: 10.0,
                   ),
-                  Text('Image from Gallery',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      )),
+                  Text(
+                    'Image from Gallery',
+                    style: subhead2,
+                  ),
                 ],
               ),
             ),
-            SimpleDialogOption(
-              child: Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.cancel,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text('Cancel',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      )),
-                ],
+            FlatButton(
+              child: Text(
+                'Cancel',
+                style: subhead2.copyWith(
+                  fontSize: 14,
+                  color: themeColor,
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -171,7 +172,7 @@ class _StudentInfoState extends State<StudentInfo> {
   handleImage() async {
     setState(() {});
     await compressImage();
-    mediaUrl = await uploadImage(file);
+    widget._mediaUrl = await uploadImage(file);
   }
 
   Future<String> uploadImage(imageFile) async {
@@ -190,12 +191,12 @@ class _StudentInfoState extends State<StudentInfo> {
     DocumentReference docRef = usersRef.document(myNumber);
     await docRef.setData({
       'isTeacher': false,
-      'firstName': firstName,
-      'lastName': lastName,
-      'Name': firstName + ' ' + lastName,
-      'profilePic': mediaUrl,
+      'firstName': widget._firstName,
+      'lastName': widget._lastName,
+      'Name': widget._firstName + ' ' + widget._lastName,
+      'profilePic': widget._mediaUrl,
       'mobileNumber': myNumber,
-      'email': email,
+      'email': widget._emailId,
       'country': countryController.text,
       'state': stateController.text,
       'city': cityController.text,
@@ -208,238 +209,305 @@ class _StudentInfoState extends State<StudentInfo> {
     Navigator.pushReplacementNamed(context, HomeScreen.homeRoute);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return isLoading ? circularProgress() : Scaffold(
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Incomplete Page Just go back',
-                    style: kTextStyle,
+  Widget _getProfilePic() {
+    return Material(
+      elevation: 10,
+      shape: CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: Center(
+        child: GestureDetector(
+          child: CircleAvatar(
+            radius: MediaQuery.of(context).size.width * 0.2,
+            backgroundImage: file != null
+                ? FileImage(file)
+                : AssetImage(
+                    'assets/images/default.png',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        selectImage(context);
-                      },
-                      child: file == null
-                          ? CircleAvatar(
-                              backgroundColor: Colors.black,
-                              radius: 40,
-                            )
-                          : Card(
-                              child: Container(
-                                height: 100,
-                                width: 100,
-                                child: Image.file(file),
-                              ),
-                            ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              onChanged: (val) {
-                                firstName = val;
-                              },
-                              decoration: InputDecoration(
-                                  hintText: 'First Name',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'First Name'),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              onChanged: (val) {
-                                lastName = val;
-                              },
-                              decoration: InputDecoration(
-                                  hintText: 'Last Name',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'Last Name'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  /*
-
-
-                  Gender and DOB will Come here.
-
-
-                   */
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: ListTile(
-                      title: TextFormField(
-                        controller: mobileNoController,
-                        decoration: InputDecoration(
-                            prefixText: 'Mobile No : ',
-                            hintText: 'Mobile No',
-                            hintStyle: kLabelStyle,
-                            focusedBorder: kTextInputBorder,
-                            enabledBorder: kTextInputBorder,
-                            labelStyle: kLabelStyle,
-                            labelText: 'Mobile No'),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: ListTile(
-                      title: TextFormField(
-                        onChanged: (val) {
-                          email = val;
-                        },
-                        decoration: InputDecoration(
-                            prefixText: 'Email : ',
-                            hintText: 'Email',
-                            hintStyle: kLabelStyle,
-                            focusedBorder: kTextInputBorder,
-                            enabledBorder: kTextInputBorder,
-                            labelStyle: kLabelStyle,
-                            labelText: 'Email'),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              controller: countryController,
-                              decoration: InputDecoration(
-                                  hintText: 'Country',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'Country'),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              controller: stateController,
-                              decoration: InputDecoration(
-                                  hintText: 'State',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'State'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              controller: cityController,
-                              decoration: InputDecoration(
-                                  hintText: 'City',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'City'),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: ListTile(
-                            title: TextFormField(
-                              controller: pincodeController,
-                              decoration: InputDecoration(
-                                  hintText: 'Pincode',
-                                  hintStyle: kLabelStyle,
-                                  focusedBorder: kTextInputBorder,
-                                  enabledBorder: kTextInputBorder,
-                                  labelStyle: kLabelStyle,
-                                  labelText: 'Pincode'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: FlatButton.icon(
-                        onPressed: () {
-                          getUserLocation();
-                        },
-                        icon: Icon(
-                          Icons.my_location,
-                          color: Colors.blue,
-                        ),
-                        label: Text(
-                          'Get Location',
-                          style: kTextStyle,
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: FlatButton.icon(
-                        onPressed: () {
-                          createFirebase();
-                        },
-                        icon: Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.black,
-                        ),
-                        label: Text(
-                          'Next',
-                          style: kTextStyle,
-                        )),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            backgroundColor: Colors.transparent,
+          ),
+          onTap: () {
+            //Implement setting up of profile Image here.
+            selectImage(context);
+          },
         ),
       ),
     );
+  }
+
+  Widget _buildFirstName() {
+    return myFromField(
+      label: 'First Name',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'First name is required';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        widget._firstName = value;
+      },
+    );
+  }
+
+  Widget _buildLastName() {
+    return myFromField(
+      label: 'Last Name',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Last name is required.';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        widget._lastName = value;
+      },
+    );
+  }
+
+  Widget _buildMobileNumber() {
+    return myFromField(
+      label: 'Mobile Number',
+      controller: mobileNoController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Mobile number is required.';
+        }
+        if (value.length != 13) {
+          return 'Invalid mobile number';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        widget._lastName = value;
+      },
+    );
+  }
+
+  Widget _buildHighestEducation() {
+    return myFromField(
+      label: 'Highest Education',
+      hint: 'ABC degree from XYZ university.',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Education details are required.';
+        }
+
+        return null;
+      },
+      onSaved: (String value) {
+        widget._highestEducation = value;
+      },
+    );
+  }
+
+  Widget _buildEmail() {
+    return myFromField(
+      label: 'Email Address',
+      hint: 'someone@example.com',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Email is required.';
+        }
+        if (!RegExp(
+                r'^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$')
+            .hasMatch(value)) {
+          return 'invalid email address';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        widget._emailId = value;
+      },
+    );
+  }
+
+  Widget _buildCountry() {
+    return myFromField(
+      label: 'Country',
+      controller: countryController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Country is required.';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  Widget _buildState() {
+    return myFromField(
+      label: 'State',
+      controller: stateController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'State is required.';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  Widget _buildCity() {
+    return myFromField(
+      label: 'City',
+      controller: cityController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'City is required.';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPincode() {
+    return myFromField(
+      label: 'PIN Code',
+      controller: pincodeController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'PIN code is required.';
+        }
+
+        return null;
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? circularProgress()
+        : Scaffold(
+            appBar: AppBar(
+              title: Text(
+                'Student Profile',
+                style: heading1,
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0,
+            ),
+            backgroundColor: Colors.white,
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                    ),
+                    _getProfilePic(),
+                    SizedBox(
+                      height: 60,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: _buildFirstName(),
+                        ),
+                        Expanded(
+                          child: _buildLastName(),
+                        ),
+                      ],
+                    ),
+                    /*
+
+
+                    Gender and DOB will Come here.
+
+
+                     */
+                    _buildMobileNumber(),
+                    _buildEmail(),
+                    _buildHighestEducation(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10.0,
+                        bottom: 10.0,
+                      ),
+                      child: Text(
+                        'Enter the details of the education you are currently pursuing.',
+                        style: subhead1,
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: _buildCountry(),
+                        ),
+                        Expanded(child: _buildState()),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: _buildCity(),
+                        ),
+                        Expanded(
+                          child: _buildPincode(),
+                        ),
+                      ],
+                    ),
+                    FlatButton.icon(
+                      onPressed: () {
+                        getUserLocation();
+                      },
+                      icon: Icon(
+                        Icons.my_location,
+                        color: Colors.blue,
+                      ),
+                      label: Text(
+                        'Use current Location',
+                        style: subhead2,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+//                          Padding(
+//                            padding: const EdgeInsets.only(top: 20),
+//                            child: FlatButton.icon(
+//                              onPressed: () {
+//                                createFirebase();
+//                              },
+//                              icon: Icon(
+//                                Icons.arrow_forward_ios,
+//                                color: Colors.black,
+//                              ),
+//                              label: Text(
+//                                'Next',
+//                                style: kTextStyle,
+//                              ),
+//                            ),
+//                          ),
+                    myRaisedButton(
+                      label: 'Next',
+                      onPressed: () {
+                        if (!_formKey.currentState.validate()) {
+                          return;
+                        }
+                        _formKey.currentState.save();
+                        print(widget._firstName + " " + widget._lastName);
+                        print(widget._highestEducation);
+                        print(widget._emailId);
+                        createFirebase();
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }

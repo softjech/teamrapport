@@ -100,10 +100,11 @@ Widget myTextField({onChanged, label, keyboardType}) {
 
 //Customized Form Field
 Widget myFromField(
-    {label, hint, validator, onSaved, keyBoardType: TextInputType.text}) {
+    {label, hint, validator, onSaved, keyBoardType: TextInputType.text, controller}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
     child: TextFormField(
+      controller: controller,
       keyboardType: keyBoardType,
       decoration: myInputDecoration(
 

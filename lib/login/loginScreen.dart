@@ -264,9 +264,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           : verify(number);
                       //Navigator.pop(context);
                     },
-                    child: const Text(
+                    child: Text(
                       'Verify',
-                      style: TextStyle(
+                      style: subhead2.copyWith(
+                        fontSize: 14,
                         color: themeColor,
                       ),
                     ),

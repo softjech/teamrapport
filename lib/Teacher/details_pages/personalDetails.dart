@@ -10,7 +10,7 @@ class PersonalDetails extends StatefulWidget {
   String _emailId;
   DateTime _dateOfBirth;
   int _sex = 0; // 0 - male 1 - female 2 - other
-  int _aadharNumber;
+
 
   @override
   _PersonalDetailsState createState() => _PersonalDetailsState();
@@ -264,46 +264,46 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     ;
   }
 
-  Widget _buildAadhar() {
-    return Row(
-      children: <Widget>[
-        Flexible(
-          flex: 8,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
-            child: TextFormField(
-              keyboardType: TextInputType.phone,
-              maxLengthEnforced: true,
-              maxLength: 10,
-              decoration: myInputDecoration(label: 'Aadhar Number'),
-              //validator: validator,
-              onSaved: (String value) {
-                widget._aadharNumber = int.tryParse(value);
-              },
-            ),
-          ),
-        ),
-        Flexible(
-          flex: 1,
-          child: Column(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.info_outline),
-                onPressed: () {},
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+//  Widget _buildAadhar() {
+//    return Row(
+//      children: <Widget>[
+//        Flexible(
+//          flex: 8,
+//          child: Padding(
+//            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
+//            child: TextFormField(
+//              keyboardType: TextInputType.phone,
+//              maxLengthEnforced: true,
+//              maxLength: 10,
+//              decoration: myInputDecoration(label: 'Aadhar Number'),
+//              //validator: validator,
+//              onSaved: (String value) {
+//                widget._aadharNumber = int.tryParse(value);
+//              },
+//            ),
+//          ),
+//        ),
+//        Flexible(
+//          flex: 1,
+//          child: Column(
+//            children: <Widget>[
+//              IconButton(
+//                icon: Icon(Icons.info_outline),
+//                onPressed: () {},
+//              ),
+//              SizedBox(
+//                height: 20,
+//              )
+//            ],
+//          ),
+//        ),
+//      ],
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+//    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -365,8 +365,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   print(widget._popularName);
                   print(widget._emailId);
                   print(widget._sex);
-                  print(widget._aadharNumber);
+                  print(widget._dateOfBirth);
                 },
+              ),
+              SizedBox(
+                height: 20,
               ),
             ],
           ),
