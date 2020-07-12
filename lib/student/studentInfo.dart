@@ -264,24 +264,24 @@ class _StudentInfoState extends State<StudentInfo> {
     );
   }
 
-  Widget _buildMobileNumber() {
-    return myFromField(
-      label: 'Mobile Number',
-      controller: mobileNoController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Mobile number is required.';
-        }
-        if (value.length != 13) {
-          return 'Invalid mobile number';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        widget._lastName = value;
-      },
-    );
-  }
+//  Widget _buildMobileNumber() {
+//    return myFromField(
+//      label: 'Mobile Number',
+//      controller: mobileNoController,
+//      validator: (String value) {
+//        if (value.isEmpty) {
+//          return 'Mobile number is required.';
+//        }
+//        if (value.length != 13) {
+//          return 'Invalid mobile number';
+//        }
+//        return null;
+//      },
+//      onSaved: (String value) {
+//        widget._lastName = value;
+//      },
+//    );
+//  }
 
   Widget _buildHighestEducation() {
     return myFromField(
@@ -423,7 +423,6 @@ class _StudentInfoState extends State<StudentInfo> {
 
 
                      */
-                    _buildMobileNumber(),
                     _buildEmail(),
                     _buildHighestEducation(),
                     Padding(
