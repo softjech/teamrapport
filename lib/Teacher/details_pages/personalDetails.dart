@@ -1,19 +1,14 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:teamrapport/imageHandler/imageHandler.dart';
 import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 
 class PersonalDetails extends StatefulWidget {
 
   static const String routeName = '/login/checkUser/personalDetails';
-
-  String _firstName;
-  String _lastName;
-  String _popularName;
-  String _emailId;
-  DateTime _dateOfBirth;
-  int _sex = 0; // 0 - male 1 - female 2 - other
 
 
   @override
@@ -22,14 +17,109 @@ class PersonalDetails extends StatefulWidget {
 
 class _PersonalDetailsState extends State<PersonalDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  File file;
   String _dateError;
+  String _firstName;
+  String _lastName;
+  String _popularName;
+  String _emailId;
+  DateTime _dateOfBirth;
+  int _sex = 0; // 0 - male 1 - female 2 - other
+  List<String> x = [];
 
 //  var _genderMap = {
 //    0 : 'Male',
 //    1 : 'Female',
 //    2 : 'Other',
 //  };
-  bool _profileSet = false;
+//  bool _profileSet = false;
+
+  selectImage(BuildContext parentContext) {
+    return showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          elevation: 50,
+          backgroundColor: Colors.white,
+          //contentPadding: EdgeInsets.all(20.0),
+          titlePadding: EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Center(
+            child: Text(
+              'Upload Profile Picture',
+              style: heading2,
+            ),
+          ),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.camera_alt,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    'From Camera',
+                    style: subhead2,
+                  ),
+                ],
+              ),
+              onPressed: ()async{
+                File temp = await ImageHandler().handleTakePhoto(context);
+                if(temp!=null){
+                setState(() {
+                  this.file = temp;
+                });}
+              },
+            ),
+            SimpleDialogOption(
+              onPressed: ()async{
+                File temp = await ImageHandler().handleChooseFromGallery(context);
+                if(temp != null){
+                setState(() {
+                  this.file = temp;
+                });}
+                },
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.image,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    'From Gallery',
+                    style: subhead2,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 30,
+              alignment: Alignment.center,
+              child: GestureDetector(
+                child: Text(
+                  'Cancel',
+                  style: subhead2.copyWith(
+                    fontSize: 14,
+                    color: themeColor,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _getProfilePic() {
     return Material(
@@ -40,15 +130,15 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         child: GestureDetector(
           child: CircleAvatar(
             radius: MediaQuery.of(context).size.width *0.15,
-            backgroundImage: _profileSet
-                ? NetworkImage('https://via.placeholder.com/150')
+            backgroundImage: file != null
+                ? FileImage(file)
                 : AssetImage(
                     'assets/images/default.png',
                   ),
             backgroundColor: Colors.transparent,
           ),
           onTap: () {
-            //Implement setting up of profile Image here.
+              selectImage(context);
           },
         ),
       ),
@@ -65,7 +155,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._firstName = value;
+        _firstName = value;
       },
     );
   }
@@ -80,7 +170,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._lastName = value;
+        _lastName = value;
       },
     );
   }
@@ -92,7 +182,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         myFromField(
           label: 'Popular Name',
           onSaved: (String value) {
-            widget._popularName = value;
+            _popularName = value;
           },
         ),
         Padding(
@@ -125,7 +215,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._emailId = value;
+        _emailId = value;
       },
     );
   }
@@ -177,7 +267,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 child: DropdownButton<String>(
                   isExpanded: true,
                   items: _dropDownItems,
-                  value: '${widget._sex}',
+                  value: '$_sex',
                   //This line here could break, if that happens. The value in the sex field will be wrong
                   /*
                   Sol: uncomment the _genderMap above and in the value add the following code
@@ -186,7 +276,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   hint: Text('Select gender'),
                   onChanged: (value) {
                     setState(() {
-                      widget._sex = int.tryParse(value);
+                      _sex = int.tryParse(value);
                     });
                   },
                   style: subhead2,
@@ -224,14 +314,14 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   onTap: () {
                     showDatePicker(
                       context: context,
-                      initialDate: widget._dateOfBirth == null
+                      initialDate: _dateOfBirth == null
                           ? DateTime.now()
-                          : widget._dateOfBirth,
+                          : _dateOfBirth,
                       firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
                     ).then((value) {
                       setState(() {
-                        widget._dateOfBirth = value;
+                        _dateOfBirth = value;
                       });
                     });
                   },
@@ -243,9 +333,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                         border: Border.all(color: Colors.black38)),
                     child: Center(
                       child: Text(
-                        widget._dateOfBirth != null
+                        _dateOfBirth != null
                             ? DateFormat('dd-MM-yyyy')
-                                .format(widget._dateOfBirth)
+                                .format(_dateOfBirth)
                             : 'Select date',
                         style: subhead2.copyWith(fontSize: 16),
                       ),
@@ -265,7 +355,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         ],
       ),
     );
-    ;
+
   }
 
 
@@ -315,25 +405,24 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 height: 30,
               ),
 
-//            _buildAbout(),
-//              _buildAadhar(),
               myRaisedButton(
                 label: 'Next',
                 onPressed: () {
                   if (!_formKey.currentState.validate()) {
                     return;
                   }
-                  if (widget._dateOfBirth == null) {
+                  if (_dateOfBirth == null) {
                     setState(() {
                       _dateError = 'Please set date first.';
                     });
                   }
                   _formKey.currentState.save();
-                  print(widget._firstName + " " + widget._lastName);
-                  print(widget._popularName);
-                  print(widget._emailId);
-                  print(widget._sex);
-                  print(widget._dateOfBirth);
+                  print(_firstName + " " + _lastName);
+                  print(_popularName);
+                  print(_emailId);
+                  print(_sex);
+                  print(_dateOfBirth);
+
                   Navigator.of(context).pushReplacementNamed(ProfessionalDetails.routeName);
                 },
               ),

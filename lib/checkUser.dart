@@ -8,10 +8,7 @@ import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
-import 'package:teamrapport/teacher/details_pages/addressDetails.dart';
 import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
-import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
-import 'package:teamrapport/teacher/teacherVerification.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
 import 'loading/progress.dart';
 
