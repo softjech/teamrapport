@@ -7,7 +7,11 @@ import 'package:teamrapport/services/auth_provider.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/checkUser.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
-import 'package:teamrapport/teacher/teacherDetails.dart';
+import 'package:teamrapport/teacher/details_pages/addressDetails.dart';
+import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
+import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
+import 'package:teamrapport/teacher/teacherHome.dart';
+import 'package:teamrapport/teacher/teacherVerification.dart';
 import 'package:teamrapport/widgets/onBoardingScreen.dart';
 import 'home/homeScreen.dart';
 import 'login/loginScreen.dart';
@@ -92,9 +96,9 @@ class _MyAppState extends State<MyApp> {
                 if(isLogin == null){
                   return OnboardingScreen();
                 }
-                /*else if(isLogin == 'true'){
-                  return HomeScreen();
-                }*/
+//                else if(isLogin == 'true'){
+//                  return HomeScreen();
+//                }
                 else{
                 return LandingPage();}
               },
@@ -108,8 +112,11 @@ class _MyAppState extends State<MyApp> {
           HomeScreen.homeRoute: (ctx) => HomeScreen(),
           OnboardingScreen.onBoardRoute: (ctx) => OnboardingScreen(),
           StudentInfo.studentRoute: (ctx) => StudentInfo(),
-          TeacherDetailsScreen.teacherDetailsRoute: (ctx) =>
-              TeacherDetailsScreen(),
+          PersonalDetails.routeName:(ctx) => PersonalDetails(),
+          ProfessionalDetails.routeName:(ctx) => ProfessionalDetails(),
+          AddressDetails.routeName: (ctx) => AddressDetails(),
+          TeacherHomeScreen.routeName:(ctx)=>TeacherHomeScreen(),
+          TeacherVerification.routeName:(ctx)=>TeacherVerification(),
         },
       ),
     );

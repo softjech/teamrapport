@@ -118,7 +118,7 @@ class _StudentInfoState extends State<StudentInfo> {
                     width: 10.0,
                   ),
                   Text(
-                    'Photo with Camera',
+                    'From Camera',
                     style: subhead2,
                   ),
                 ],
@@ -137,21 +137,25 @@ class _StudentInfoState extends State<StudentInfo> {
                     width: 10.0,
                   ),
                   Text(
-                    'Image from Gallery',
+                    'From Gallery',
                     style: subhead2,
                   ),
                 ],
               ),
             ),
-            FlatButton(
-              child: Text(
-                'Cancel',
-                style: subhead2.copyWith(
-                  fontSize: 14,
-                  color: themeColor,
+            Container(
+              height: 30,
+              alignment: Alignment.center,
+              child: GestureDetector(
+                child: Text(
+                  'Cancel',
+                  style: subhead2.copyWith(
+                    fontSize: 14,
+                    color: themeColor,
+                  ),
                 ),
+                onTap: () => Navigator.pop(context),
               ),
-              onPressed: () => Navigator.pop(context),
             ),
           ],
         );
@@ -222,7 +226,7 @@ class _StudentInfoState extends State<StudentInfo> {
       child: Center(
         child: GestureDetector(
           child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.2,
+            radius: MediaQuery.of(context).size.width * 0.15,
             backgroundImage: file != null
                 ? FileImage(file)
                 : AssetImage(

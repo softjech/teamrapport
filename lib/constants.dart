@@ -74,13 +74,14 @@ const kTextInputBorder = OutlineInputBorder(
 );
 
 //Custom Input decoration
-InputDecoration myInputDecoration({label, hint}) {
+InputDecoration myInputDecoration({label, hint, prefixIcon}) {
   return InputDecoration(
     isDense: true,
     contentPadding: EdgeInsets.all(15),
     labelText: label,
     labelStyle: subhead2,
     hintText: hint,
+    prefixIcon: prefixIcon,
     focusedBorder: completeInputBorder,
     border: completeInputBorder,
   );

@@ -8,7 +8,10 @@ import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
-import 'package:teamrapport/teacher/teacherDetails.dart';
+import 'package:teamrapport/teacher/details_pages/addressDetails.dart';
+import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
+import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
+import 'package:teamrapport/teacher/teacherVerification.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
 import 'loading/progress.dart';
 
@@ -124,7 +127,10 @@ class _CheckUserState extends State<CheckUser> {
                           title: 'Teacher',
                           onTap: () {
                             Navigator.pushNamed(
-                                context, TeacherDetailsScreen.teacherDetailsRoute);
+                              /*While developing the teacher details pages
+                              change the route below to which you want to edit.
+                               */
+                                context, PersonalDetails.routeName);
                           },
                           desc: 'Reach out to new students.',
                           color: Colors.red,

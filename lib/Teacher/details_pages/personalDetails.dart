@@ -2,8 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 
 class PersonalDetails extends StatefulWidget {
+
+  static const String routeName = '/login/checkUser/personalDetails';
+
   String _firstName;
   String _lastName;
   String _popularName;
@@ -35,7 +39,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       child: Center(
         child: GestureDetector(
           child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.2,
+            radius: MediaQuery.of(context).size.width *0.15,
             backgroundImage: _profileSet
                 ? NetworkImage('https://via.placeholder.com/150')
                 : AssetImage(
@@ -264,42 +268,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     ;
   }
 
-//  Widget _buildAadhar() {
-//    return Row(
-//      children: <Widget>[
-//        Flexible(
-//          flex: 8,
-//          child: Padding(
-//            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8),
-//            child: TextFormField(
-//              keyboardType: TextInputType.phone,
-//              maxLengthEnforced: true,
-//              maxLength: 10,
-//              decoration: myInputDecoration(label: 'Aadhar Number'),
-//              //validator: validator,
-//              onSaved: (String value) {
-//                widget._aadharNumber = int.tryParse(value);
-//              },
-//            ),
-//          ),
-//        ),
-//        Flexible(
-//          flex: 1,
-//          child: Column(
-//            children: <Widget>[
-//              IconButton(
-//                icon: Icon(Icons.info_outline),
-//                onPressed: () {},
-//              ),
-//              SizedBox(
-//                height: 20,
-//              )
-//            ],
-//          ),
-//        ),
-//      ],
-//    );
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -366,6 +334,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   print(widget._emailId);
                   print(widget._sex);
                   print(widget._dateOfBirth);
+                  Navigator.of(context).pushReplacementNamed(ProfessionalDetails.routeName);
                 },
               ),
               SizedBox(
