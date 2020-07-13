@@ -64,7 +64,7 @@ class SliderModel {
     //5
     sliderModel.imagePath = 'assets/images/vectors/5.png';
     sliderModel.title = 'Audience';
-    sliderModel.desc = 'If you are a teacher. You can reach out to a much great audience.';
+    sliderModel.desc = 'If you are a teacher. You can reach out to a much greater audience.';
     slides.add(sliderModel);
     return slides;
   }

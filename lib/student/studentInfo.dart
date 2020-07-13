@@ -7,27 +7,27 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
-import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/loading/progress.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import '../checkUser.dart';
 import '../constants.dart';
+import 'student_home_screen.dart';
 
 class StudentInfo extends StatefulWidget {
-  static const String studentRoute = 'onboarding/login/student';
+  static const String studentRoute = '/onboarding/login/student';
 
   @override
   _StudentInfoState createState() => _StudentInfoState();
 }
 
 class _StudentInfoState extends State<StudentInfo> {
-
   String _firstName;
   String _lastName;
   String _emailId;
   String _highestEducation;
-  String _mediaUrl=' ';
+  String _mediaUrl = ' ';
+
   //Input form key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -192,13 +192,25 @@ class _StudentInfoState extends State<StudentInfo> {
     setState(() {
       isLoading = true;
     });
-    if(file != null){
-    await handleImage();}
-    List<String> myData = ['false',_firstName,_lastName,_emailId,myNumber,countryController.text,stateController.text,cityController.text,pincodeController.text,_mediaUrl];
+    if (file != null) {
+      await handleImage();
+    }
+    List<String> myData = [
+      'false',
+      _firstName,
+      _lastName,
+      _emailId,
+      myNumber,
+      countryController.text,
+      stateController.text,
+      cityController.text,
+      pincodeController.text,
+      _mediaUrl
+    ];
     DocumentReference docRef = usersRef.document(myNumber);
     await docRef.setData({
       'isTeacher': false,
-      'education':_highestEducation,
+      'education': _highestEducation,
       'firstName': _firstName,
       'lastName': _lastName,
       'Name': _firstName + ' ' + _lastName,
@@ -215,7 +227,7 @@ class _StudentInfoState extends State<StudentInfo> {
       isLoading = false;
       file = null;
     });
-    Navigator.pushReplacementNamed(context, HomeScreen.homeRoute);
+    Navigator.pushReplacementNamed(context, StudentHomeScreen.routeName);
   }
 
   Widget _getProfilePic() {
@@ -272,6 +284,7 @@ class _StudentInfoState extends State<StudentInfo> {
       },
     );
   }
+
   Widget _buildHighestEducation() {
     return myFromField(
       label: 'Highest Education',
@@ -373,7 +386,15 @@ class _StudentInfoState extends State<StudentInfo> {
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){Navigator.pushReplacementNamed(context, CheckUser.checkRoute);},),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    CheckUser.checkRoute,
+                  );
+                },
+              ),
               title: Text(
                 'Student Profile',
                 style: heading1,

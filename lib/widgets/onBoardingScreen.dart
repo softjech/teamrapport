@@ -6,6 +6,7 @@ import 'package:teamrapport/models/data.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static const String onBoardRoute = '/onboarding';
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -103,10 +104,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             )
           : InkWell(
               onTap: () {
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context){
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) {
                       return LandingPage();
-                }));
+                    },
+                  ),
+                );
               },
               child: Container(
                 height: 55,

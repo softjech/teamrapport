@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teamrapport/constants.dart';
-import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
@@ -14,6 +13,7 @@ import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 import 'package:teamrapport/teacher/teacherVerification.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
 import 'loading/progress.dart';
+import 'student/student_home_screen.dart';
 
 final usersRef = Firestore.instance.collection('users');
 final StorageReference storageRef = FirebaseStorage.instance.ref();
@@ -65,7 +65,11 @@ class _CheckUserState extends State<CheckUser> {
                 FlatButton.icon(
                   onPressed: () {
                     setState(() {
-                      Navigator.of(context).pushReplacementNamed(HomeScreen.homeRoute);});},
+                      Navigator.of(context).pushReplacementNamed(
+                        StudentHomeScreen.routeName,   //This line is changed by me. This code is not correct and needs to be changed.
+                      );
+                    });
+                  },
                   icon: Icon(Icons.home),
                   label: Text('Home'),
                 ),
@@ -127,10 +131,11 @@ class _CheckUserState extends State<CheckUser> {
                           title: 'Teacher',
                           onTap: () {
                             Navigator.pushNamed(
-                              /*While developing the teacher details pages
+                                /*While developing the teacher details pages
                               change the route below to which you want to edit.
                                */
-                                context, PersonalDetails.routeName);
+                                context,
+                                PersonalDetails.routeName);
                           },
                           desc: 'Reach out to new students.',
                           color: Colors.red,
