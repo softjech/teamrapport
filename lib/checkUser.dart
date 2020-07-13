@@ -135,7 +135,7 @@ class _CheckUserState extends State<CheckUser> {
                         BoxWidget(
                           title: 'Student',
                           onTap: () {
-                            Navigator.pushNamed(
+                            Navigator.pushReplacementNamed(
                                 context, StudentInfo.studentRoute);
                           },
                           desc: 'Rate teachers and find the best for you.',

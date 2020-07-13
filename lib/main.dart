@@ -92,9 +92,9 @@ class _MyAppState extends State<MyApp> {
                 if(isLogin == null){
                   return OnboardingScreen();
                 }
-                else if(isLogin == 'true'){
+                /*else if(isLogin == 'true'){
                   return HomeScreen();
-                }
+                }*/
                 else{
                 return LandingPage();}
               },

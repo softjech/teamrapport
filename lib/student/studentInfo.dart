@@ -10,6 +10,7 @@ import 'package:image/image.dart' as Im;
 import 'package:teamrapport/home/homeScreen.dart';
 import 'package:teamrapport/loading/progress.dart';
 import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import '../checkUser.dart';
 import '../constants.dart';
 
@@ -189,6 +190,7 @@ class _StudentInfoState extends State<StudentInfo> {
     });
     if(file != null){
     await handleImage();}
+    List<String> myData = ['false',_firstName,_lastName,_emailId,myNumber,countryController.text,stateController.text,cityController.text,pincodeController.text,_mediaUrl];
     DocumentReference docRef = usersRef.document(myNumber);
     await docRef.setData({
       'isTeacher': false,
@@ -204,6 +206,7 @@ class _StudentInfoState extends State<StudentInfo> {
       'city': cityController.text,
       'pincode': pincodeController.text,
     });
+    SharedPrefFunction().saveStudentData(myNumber, myData);
     setState(() {
       isLoading = false;
       file = null;
@@ -365,6 +368,8 @@ class _StudentInfoState extends State<StudentInfo> {
         ? circularProgress()
         : Scaffold(
             appBar: AppBar(
+              centerTitle: true,
+              leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){Navigator.pushReplacementNamed(context, CheckUser.checkRoute);},),
               title: Text(
                 'Student Profile',
                 style: heading1,
