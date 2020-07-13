@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
-import '../AuthService.dart';
+import 'package:teamrapport/services/auth_provider.dart';
 import '../constants.dart';
 
 String number, otp;
@@ -184,12 +184,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       myRaisedButton(
                         label: 'Get OTP',
                         onPressed: () {
-                          createAlertDialog(context);
+                          //createAlertDialog(context);
 //                            codeSent
 //                                ? AuthService()
 //                                    .signInWithOtp(smsCode, otp, context)
 //                                : verify(number);
-                          AuthService().signInWithOtp(smsCode, otp, context);
+                          //AuthService().signInWithOtp(smsCode, otp, context);
                           verify(number);
                         },
                       ),
@@ -258,9 +258,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   //width: 200,
                   child: FlatButton(
                     onPressed: () {
+                      final auth =AuthProvider.of(context);
                       print('CodeSent' + codeSent.toString());
                       codeSent
-                          ? AuthService().signInWithOtp(code.text, otp, context)
+                          ? auth.signInWithOtp(code.text, otp, context)
                           : verify(number);
                       //Navigator.pop(context);
                     },
@@ -288,13 +289,15 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPrefFunction().saveNumberPreference(myNumber);
 
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
-      AuthService().signIn(authResult);
+      final auth = AuthProvider.of(context);
+      auth.signIn(authResult);
     };
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
       print('Hi  Rapport ${authException.message}');
     };
     final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
+      createAlertDialog(context);
       this.otp = verId;
       setState(() {
         codeSent = true; //In case number is not in the mobile

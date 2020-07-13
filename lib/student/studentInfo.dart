@@ -16,17 +16,17 @@ import '../constants.dart';
 class StudentInfo extends StatefulWidget {
   static const String studentRoute = 'onboarding/login/student';
 
-  String _firstName;
-  String _lastName;
-  String _emailId;
-  String _highestEducation;
-  String _mediaUrl;
-
   @override
   _StudentInfoState createState() => _StudentInfoState();
 }
 
 class _StudentInfoState extends State<StudentInfo> {
+
+  String _firstName;
+  String _lastName;
+  String _emailId;
+  String _highestEducation;
+  String _mediaUrl=' ';
   //Input form key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -172,7 +172,7 @@ class _StudentInfoState extends State<StudentInfo> {
   handleImage() async {
     setState(() {});
     await compressImage();
-    widget._mediaUrl = await uploadImage(file);
+    _mediaUrl = await uploadImage(file);
   }
 
   Future<String> uploadImage(imageFile) async {
@@ -187,16 +187,18 @@ class _StudentInfoState extends State<StudentInfo> {
     setState(() {
       isLoading = true;
     });
-    await handleImage();
+    if(file != null){
+    await handleImage();}
     DocumentReference docRef = usersRef.document(myNumber);
     await docRef.setData({
       'isTeacher': false,
-      'firstName': widget._firstName,
-      'lastName': widget._lastName,
-      'Name': widget._firstName + ' ' + widget._lastName,
-      'profilePic': widget._mediaUrl,
+      'education':_highestEducation,
+      'firstName': _firstName,
+      'lastName': _lastName,
+      'Name': _firstName + ' ' + _lastName,
+      'profilePic': _mediaUrl,
       'mobileNumber': myNumber,
-      'email': widget._emailId,
+      'email': _emailId,
       'country': countryController.text,
       'state': stateController.text,
       'city': cityController.text,
@@ -244,7 +246,7 @@ class _StudentInfoState extends State<StudentInfo> {
         return null;
       },
       onSaved: (String value) {
-        widget._firstName = value;
+        _firstName = value;
       },
     );
   }
@@ -259,30 +261,10 @@ class _StudentInfoState extends State<StudentInfo> {
         return null;
       },
       onSaved: (String value) {
-        widget._lastName = value;
+        _lastName = value;
       },
     );
   }
-
-//  Widget _buildMobileNumber() {
-//    return myFromField(
-//      label: 'Mobile Number',
-//      controller: mobileNoController,
-//      validator: (String value) {
-//        if (value.isEmpty) {
-//          return 'Mobile number is required.';
-//        }
-//        if (value.length != 13) {
-//          return 'Invalid mobile number';
-//        }
-//        return null;
-//      },
-//      onSaved: (String value) {
-//        widget._lastName = value;
-//      },
-//    );
-//  }
-
   Widget _buildHighestEducation() {
     return myFromField(
       label: 'Highest Education',
@@ -295,7 +277,7 @@ class _StudentInfoState extends State<StudentInfo> {
         return null;
       },
       onSaved: (String value) {
-        widget._highestEducation = value;
+        _highestEducation = value;
       },
     );
   }
@@ -316,7 +298,7 @@ class _StudentInfoState extends State<StudentInfo> {
         return null;
       },
       onSaved: (String value) {
-        widget._emailId = value;
+        _emailId = value;
       },
     );
   }
@@ -471,22 +453,6 @@ class _StudentInfoState extends State<StudentInfo> {
                     SizedBox(
                       height: 20,
                     ),
-//                          Padding(
-//                            padding: const EdgeInsets.only(top: 20),
-//                            child: FlatButton.icon(
-//                              onPressed: () {
-//                                createFirebase();
-//                              },
-//                              icon: Icon(
-//                                Icons.arrow_forward_ios,
-//                                color: Colors.black,
-//                              ),
-//                              label: Text(
-//                                'Next',
-//                                style: kTextStyle,
-//                              ),
-//                            ),
-//                          ),
                     myRaisedButton(
                       label: 'Next',
                       onPressed: () {
@@ -494,9 +460,9 @@ class _StudentInfoState extends State<StudentInfo> {
                           return;
                         }
                         _formKey.currentState.save();
-                        print(widget._firstName + " " + widget._lastName);
-                        print(widget._highestEducation);
-                        print(widget._emailId);
+                        print(_firstName + " " + _lastName);
+                        print(_highestEducation);
+                        print(_emailId);
                         createFirebase();
                       },
                     ),

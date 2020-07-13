@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teamrapport/constants.dart';
-import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/landing_page.dart';
 import 'package:teamrapport/models/data.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -104,7 +104,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           : InkWell(
               onTap: () {
                 Navigator.of(context)
-                    .pushReplacementNamed(LoginScreen.loginRoute);
+                    .pushReplacement(MaterialPageRoute(builder: (context){
+                      return LandingPage();
+                }));
               },
               child: Container(
                 height: 55,

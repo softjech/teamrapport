@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:teamrapport/AuthService.dart';
+import 'package:teamrapport/landing_page.dart';
+import 'package:teamrapport/services/auth_provider.dart';
+import 'package:teamrapport/widgets/platform_alert_dialog.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -10,21 +11,51 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool dataExist = true;
+
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      final auth = AuthProvider.of(context);
+      await auth.signOut();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await PlatformAlertDialog(
+      title: 'Logout',
+      content: 'Are you sure that you want to logout?',
+      cancelActionText: 'Cancel',
+      defaultActionText: 'Logout',
+    ).show(context);
+    if (didRequestSignOut == true) {
+      _signOut(context);
+    }
+  }
 
   @override
+  void initState() {
+    super.initState();
+    checkData();
+  }
+  void checkData() async{
+
+  }
+  @override
   Widget build(BuildContext context) {
+    final auth = AuthProvider.of(context);
     return StreamBuilder(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
+      stream: auth.onAuthStateChanged,
       builder: (context,snapshot){
+        print('Home');
         if(snapshot.hasData){
           return Scaffold(
             body: SafeArea(
               child: Container(
                 child: FlatButton.icon(
                   onPressed: () {
-                    setState(() {
-                      AuthService().signOut();
-                    });
+                    _confirmSignOut(context);
                   },
                   icon: Icon(Icons.clear),
                   label: Text('Sign Out'),
@@ -34,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
         else{
-        return AuthService().handleAuth();}
+        return LandingPage();}
       },
     );
   }
