@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    Navigator.maybePop(context);
     final auth = AuthProvider.of(context);
     return StreamBuilder(
       stream: auth.onAuthStateChanged,

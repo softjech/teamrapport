@@ -21,6 +21,7 @@ class LandingPage extends StatelessWidget {
             }
             else{
               SharedPrefFunction().saveLoginPreference();
+              Navigator.maybePop(context);
             return CheckUser();}
           } else {
             return Scaffold(
