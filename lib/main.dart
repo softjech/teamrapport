@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:teamrapport/helpers/customRouteTransition.dart';
 import 'package:teamrapport/landing_page.dart';
 import 'package:teamrapport/services/auth.dart';
-import 'package:teamrapport/services/auth_provider.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/checkUser.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
@@ -18,7 +17,13 @@ import 'login/loginScreen.dart';
 import 'student/student_home_screen.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider<Data>(create: (context)=>Data(),child: MyApp()));
+
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Data>(create: (_)=>Data(),),
+        Provider<AuthBase>(create: (context)=>Auth(),)
+      ],
+      child: MyApp(),),);
 }
 
 String isLogin=' '; // ' ' it is necessary so that error will not occur because of null value
@@ -46,10 +51,12 @@ class _MyAppState extends State<MyApp> {
     }
     setState(() {
       isLogin = res;
-      myData = data;
+      if(data != null){
+        myData = data;
+      if(data.length != 0 ){
       if(data[0]=='true'){
         teacher  = 'true';
-      }
+      }}}
     });
   }
 
@@ -70,21 +77,19 @@ class _MyAppState extends State<MyApp> {
           "assets/images/bg_diary.png",
         ),
         context);
-    return AuthProvider(
-      auth: Auth(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Rapport',
-        theme: ThemeData(
-          primaryColor: Color(0xFFE3F2FD),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          pageTransitionsTheme: PageTransitionsTheme(
-            builders: {
-              TargetPlatform.android: CustomPageTransitionsBuilder(),
-              TargetPlatform.iOS: CustomPageTransitionsBuilder(),
-            },
-          ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Rapport',
+      theme: ThemeData(
+        primaryColor: Color(0xFFE3F2FD),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CustomPageTransitionsBuilder(),
+            TargetPlatform.iOS: CustomPageTransitionsBuilder(),
+          },
         ),
+      ),
 //      home: SplashScreen.navigate(
 //        name: 'assets/splash.flr',
 //        next: (context) {
@@ -95,49 +100,48 @@ class _MyAppState extends State<MyApp> {
 //        backgroundColor: Colors.white,
 //      ),
 
-        /*This is the routes table. Add all the route names used inside the app here
-        Add the route name where the route is made as static const String, so as to you don't need to remember anything.
-         */
-        routes: {
-          //the route name / stands for home / first route in the app.
-          '/': (ctx) {
-            return SplashScreen.navigate(
-              name: 'assets/splash.flr',
-              next: (context) {
-                print(isLogin.toString());
-                if(isLogin == null){
-                  return OnboardingScreen();
+      /*This is the routes table. Add all the route names used inside the app here
+      Add the route name where the route is made as static const String, so as to you don't need to remember anything.
+       */
+      routes: {
+        //the route name / stands for home / first route in the app.
+        '/': (ctx) {
+          return SplashScreen.navigate(
+            name: 'assets/splash.flr',
+            next: (context) {
+              print(isLogin.toString());
+              if(isLogin == null){
+                return OnboardingScreen();
+              }
+              else if(isLogin == 'true'){
+                if(myData.length == 0){
+                  return CheckUser();
                 }
-                else if(isLogin == 'true'){
-                  if(myData.length == 0){
-                    return CheckUser();
-                  }
-                  if(teacher=='true'){
-                  return TeacherHomeScreen();}
-                  else{
-                    return StudentHomeScreen();
-                  }
-                }
+                if(teacher=='true'){
+                return TeacherHomeScreen();}
                 else{
-                return LandingPage();}
-              },
-              startAnimation: 'Untitled',
-              until: () => Future.delayed(Duration(seconds: 4)),
-              backgroundColor: Colors.white,
-            );
-          },
-          LoginScreen.loginRoute: (ctx) => LoginScreen(),
-          CheckUser.checkRoute: (ctx) => CheckUser(),
-          OnboardingScreen.onBoardRoute: (ctx) => OnboardingScreen(),
-          StudentInfo.studentRoute: (ctx) => StudentInfo(),
-          PersonalDetails.routeName:(ctx) => PersonalDetails(),
-          ProfessionalDetails.routeName:(ctx) => ProfessionalDetails(),
-          AddressDetails.routeName: (ctx) => AddressDetails(),
-          TeacherHomeScreen.routeName:(ctx)=>TeacherHomeScreen(),
-          TeacherVerification.routeName:(ctx)=>TeacherVerification(),
-          StudentHomeScreen.routeName : (ctx)=>StudentHomeScreen(),
+                  return StudentHomeScreen();
+                }
+              }
+              else{
+              return LandingPage();}
+            },
+            startAnimation: 'Untitled',
+            until: () => Future.delayed(Duration(seconds: 4)),
+            backgroundColor: Colors.white,
+          );
         },
-      ),
+        LoginScreen.loginRoute: (ctx) => LoginScreen(),
+        CheckUser.checkRoute: (ctx) => CheckUser(),
+        OnboardingScreen.onBoardRoute: (ctx) => OnboardingScreen(),
+        StudentInfo.studentRoute: (ctx) => StudentInfo(),
+        PersonalDetails.routeName:(ctx) => PersonalDetails(),
+        ProfessionalDetails.routeName:(ctx) => ProfessionalDetails(),
+        AddressDetails.routeName: (ctx) => AddressDetails(),
+        TeacherHomeScreen.routeName:(ctx)=>TeacherHomeScreen(),
+        TeacherVerification.routeName:(ctx)=>TeacherVerification(),
+        StudentHomeScreen.routeName : (ctx)=>StudentHomeScreen(),
+      },
     );
   }
 }

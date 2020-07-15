@@ -1,6 +1,7 @@
+/*
 import 'package:flutter/material.dart';
 
-import 'auth.dart';
+import '../services/auth.dart';
 
 class AuthProvider extends InheritedWidget {
   AuthProvider({@required this.auth, @required this.child});
@@ -16,4 +17,4 @@ class AuthProvider extends InheritedWidget {
 //    AuthProvider provider = context.dependOnInheritedWidgetOfExactType(aspect: AuthProvider);
     return provider.auth;
   }
-}
+}*/

@@ -35,7 +35,6 @@ class _CheckUserState extends State<CheckUser> {
     myNumber = await SharedPrefFunction().getNumberPreference();
     DocumentSnapshot doc = await usersRef.document(myNumber).get();
     if (doc.exists) {
-
       setState(() {
         dataExists = true;
         isLoading = false;

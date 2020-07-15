@@ -4,8 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
-import 'package:teamrapport/services/auth_provider.dart';
+import 'package:teamrapport/services/auth.dart';
 import '../constants.dart';
 
 String number, otp;
@@ -258,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   //width: 200,
                   child: FlatButton(
                     onPressed: () {
-                      final auth =AuthProvider.of(context);
+                      final auth =Provider.of<AuthBase>(context,listen: false);
                       print('CodeSent' + codeSent.toString());
                       codeSent
                           ? auth.signInWithOtp(code.text, otp, context)
@@ -289,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPrefFunction().saveNumberPreference(myNumber);
 
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context,listen: false);
       auth.signIn(authResult);
     };
     final PhoneVerificationFailed verificationFailed =
