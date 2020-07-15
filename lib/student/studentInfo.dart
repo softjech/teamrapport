@@ -222,7 +222,7 @@ class _StudentInfoState extends State<StudentInfo> {
       'city': cityController.text,
       'pincode': pincodeController.text,
     });
-    SharedPrefFunction().saveStudentData(myNumber, myData);
+    SharedPrefFunction().saveUserData(myNumber, myData);
     setState(() {
       isLoading = false;
       file = null;

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 
 
@@ -48,7 +49,10 @@ class Auth implements AuthBase{
   }
   @override
   Future<void> signOut() async{
+    SharedPrefFunction().saveUserData(myNumber, []);
     SharedPrefFunction().saveLogoutPreference();
+    SharedPrefFunction().saveNumberPreference(' ');
     await FirebaseAuth.instance.signOut();
+    
   }
 }

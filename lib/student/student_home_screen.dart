@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:teamrapport/student/tabs/homeTab.dart';
+
 
 class StudentHomeScreen extends StatefulWidget {
   static const routeName = '/onboarding/login/student/studentHomeScreen';
@@ -13,7 +13,6 @@ class StudentHomeScreen extends StatefulWidget {
 class _StudentHomeState extends State<StudentHomeScreen> {
   bool _isProfilePicSet = false;
   int _currentTabIndex = 1;
-
   var _tabs = [
     Center(
       child: Text('Search Tab'),

@@ -1,5 +1,6 @@
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:teamrapport/helpers/customRouteTransition.dart';
 import 'package:teamrapport/landing_page.dart';
 import 'package:teamrapport/services/auth.dart';
@@ -17,11 +18,12 @@ import 'login/loginScreen.dart';
 import 'student/student_home_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider<Data>(create: (context)=>Data(),child: MyApp()));
 }
 
-String isLogin; // I removed = ' ' from here, because I found it unnecessary.
-
+String isLogin=' '; // ' ' it is necessary so that error will not occur because of null value
+String teacher = 'false';
+List<String> myData = [];
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -35,9 +37,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   getDetail() async {
+    List<String> data=[];
     String res = await SharedPrefFunction().getLoginPreference();
+    if(res=='true'){
+      String number = await SharedPrefFunction().getNumberPreference();
+       data = await SharedPrefFunction().getUserData(number);
+       Provider.of<Data>(context,listen: false).changeMyData(data);
+    }
     setState(() {
       isLogin = res;
+      myData = data;
+      if(data[0]=='true'){
+        teacher  = 'true';
+      }
     });
   }
 
@@ -97,7 +109,14 @@ class _MyAppState extends State<MyApp> {
                   return OnboardingScreen();
                 }
                 else if(isLogin == 'true'){
-                  return StudentHomeScreen();
+                  if(myData.length == 0){
+                    return CheckUser();
+                  }
+                  if(teacher=='true'){
+                  return TeacherHomeScreen();}
+                  else{
+                    return StudentHomeScreen();
+                  }
                 }
                 else{
                 return LandingPage();}
@@ -122,3 +141,13 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
+class Data extends ChangeNotifier{
+  List<String> myRealData = [];
+  void changeMyData (List<String> value){
+    myRealData = value;
+    notifyListeners();
+  }
+}
+

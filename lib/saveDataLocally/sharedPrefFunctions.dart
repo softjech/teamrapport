@@ -37,23 +37,15 @@ class SharedPrefFunction {
     return ' ';
   }
 
-  //saveStudentData
-  Future<Null> saveStudentData(String number,List<String> studentData) async {
-    print(number);
-    print(studentData);
+  //save user data -> for both teacher as well as student
+  Future<Null> saveUserData(String number,List<String> studentData) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setStringList(number, studentData);
-    print('saved student data');
+    print('saved user data');
   }
 
-  //saveTeacherData
-  Future<Null> saveTeacherData(String number,List<String> studentData) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setStringList(number, studentData);
-  }
-
-  //getStudentData
-  Future<List<String>> getStudentData(String number) async{
+  //Work for both teacher and student to get data
+  Future<List<String>> getUserData(String number) async{
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String> temp = await pref.getStringList(number);
     print(temp);
@@ -63,14 +55,5 @@ class SharedPrefFunction {
     return null;
   }
 
-  //getTeacherData
-  Future<List<String>> getTeacherData(String number) async{
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    List<String> temp = await pref.getStringList(number);
-    if (temp != null) {
-      return temp;
-    }
-    return null;
-  }
 
 }

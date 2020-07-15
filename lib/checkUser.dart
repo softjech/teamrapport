@@ -17,9 +17,9 @@ final StorageReference storageRef = FirebaseStorage.instance.ref();
 bool isLoading = true;
 bool dataExists = false;
 
+
 class CheckUser extends StatefulWidget {
   static const String checkRoute = '/login/checkUser';
-
   @override
   _CheckUserState createState() => _CheckUserState();
 }
@@ -35,6 +35,7 @@ class _CheckUserState extends State<CheckUser> {
     myNumber = await SharedPrefFunction().getNumberPreference();
     DocumentSnapshot doc = await usersRef.document(myNumber).get();
     if (doc.exists) {
+
       setState(() {
         dataExists = true;
         isLoading = false;
