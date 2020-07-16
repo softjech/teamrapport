@@ -21,7 +21,8 @@ void main() {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider<Data>(create: (_)=>Data(),),
-        Provider<AuthBase>(create: (context)=>Auth(),)
+        Provider<AuthBase>(create: (context)=>Auth(),),
+        ChangeNotifierProvider<TeacherAllDetails>(create: (context)=>TeacherAllDetails(),)
       ],
       child: MyApp(),),);
 }
@@ -47,11 +48,14 @@ class _MyAppState extends State<MyApp> {
     if(res=='true'){
       String number = await SharedPrefFunction().getNumberPreference();
        data = await SharedPrefFunction().getUserData(number);
-       Provider.of<Data>(context,listen: false).changeMyData(data);
+       print(data.toString()+'Hello');
+       if(data != null){
+       Provider.of<Data>(context,listen: false).changeMyData(data);}
     }
     setState(() {
       isLogin = res;
       if(data != null){
+        print(data.toString() + 'Hello ');
         myData = data;
       if(data.length != 0 ){
       if(data[0]=='true'){

@@ -3,28 +3,27 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_chips_input/flutter_chips_input.dart';
+import 'package:provider/provider.dart';
 import 'package:teamrapport/models/subjectData.dart';
 import 'package:teamrapport/teacher/details_pages/addressDetails.dart';
+import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
 import '../../constants.dart';
 
 class ProfessionalDetails extends StatefulWidget {
   static const String routeName =
       '/login/checkUser/personalDetails/professionalDetails';
-
-  String _educationDetails;
-  int _experience;
-  int _feesMin, _feesMax;
-  String _description;
-  List<SubjectObject> _subjects;
-  bool _homeTutor = false;
-
   @override
   _ProfessionalDetailsState createState() => _ProfessionalDetailsState();
 }
 
 class _ProfessionalDetailsState extends State<ProfessionalDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  String _educationDetails;
+  int _experience;
+  int _feesMin, _feesMax;
+  String _description;
+  List<SubjectObject> _subjects;
+  bool _homeTutor = false;
 //  final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
   Widget _buildEducationDetails() {
@@ -38,7 +37,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._educationDetails = value;
+        _educationDetails = value;
       },
     );
   }
@@ -52,7 +51,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
           return null;
         },
         onSaved: (String value) {
-          widget._experience = int.tryParse(value);
+          _experience = int.tryParse(value);
         });
   }
 
@@ -80,7 +79,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
                     return null;
                   },
                   onSaved: (String value) {
-                    widget._feesMin = int.tryParse(value);
+                    _feesMin = int.tryParse(value);
                   }),
             ),
             Expanded(
@@ -94,7 +93,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
                   return null;
                 },
                 onSaved: (String value) {
-                  widget._feesMax = int.tryParse(value);
+                  _feesMax = int.tryParse(value);
                 },
               ),
             ),
@@ -118,7 +117,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
           return null;
         },
         onSaved: (String value) {
-          widget._description = value;
+          _description = value;
         },
       ),
     );
@@ -130,7 +129,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
 
   void _onChanged(List<SubjectObject> data) {
     print('onChanged $data');
-    widget._subjects = data;
+    _subjects = data;
   }
 
   Future<List<SubjectObject>> _findSuggestions(String query) async {
@@ -193,10 +192,10 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
           ),
           Switch.adaptive(
               activeColor: themeColor,
-              value: widget._homeTutor,
+              value: _homeTutor,
               onChanged: (value) {
                 setState(() {
-                  widget._homeTutor = value;
+                  _homeTutor = value;
                 });
               })
         ],
@@ -264,7 +263,9 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
 //                  print(widget._popularName);
 //                  print(widget._emailId);
 //                  print(widget._sex);
-//                  print(widget._aadharNumber);
+                  print(_subjects);
+                  print(_homeTutor);
+                  Provider.of<TeacherAllDetails>(context,listen:false).changeProfessionalDetail(_educationDetails,_description, _feesMin, _feesMax, _experience, _subjects,_homeTutor);
                   Navigator.pushReplacementNamed(
                       context, AddressDetails.routeName);
                 },

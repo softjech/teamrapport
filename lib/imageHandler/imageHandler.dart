@@ -1,40 +1,13 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:teamrapport/login/loginScreen.dart';
+import '../checkUser.dart';
 
-import '../constants.dart';
 
 class ImageHandler {
-
-  File file;
-  Future<File> handleTakePhoto(BuildContext context) async {
-    Navigator.pop(context);
-    // ignore: deprecated_member_use
-    File tempFile = await ImagePicker.pickImage(
-      source: ImageSource.camera,
-      maxHeight: 675,
-      maxWidth: 960,
-    );
-      file = tempFile;
-      File outputFile = await compressImage();
-      return outputFile;
-  }
-
-  Future<File> handleChooseFromGallery(BuildContext context) async {
-    Navigator.pop(context);
-    File tempFile =
-    // ignore: deprecated_member_use
-    await ImagePicker.pickImage(source: ImageSource.gallery);
-      file = tempFile;
-      return await compressImage();
-  }
-
-
-  Future<File> compressImage() async {
+  Future<File> compressImage(File file) async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
@@ -43,4 +16,19 @@ class ImageHandler {
     file = compressedImageFile;
     return file;
   }
+
+  handleImage(File file,String name) async {
+    await compressImage(file);
+    String mediaUrl = await uploadImage(file,name);
+    return mediaUrl;
+  }
+
+  Future<String> uploadImage(imageFile,name) async {
+    StorageUploadTask uploadTask =
+    storageRef.child('$myNumber/profilePic.jpg').putFile(imageFile);
+    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
 }

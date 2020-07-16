@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:teamrapport/imageHandler/imageHandler.dart';
+import 'package:image/image.dart' as Im;
+import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/models/subjectData.dart';
 import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 
 class PersonalDetails extends StatefulWidget {
@@ -34,7 +39,30 @@ class _PersonalDetailsState extends State<PersonalDetails> {
 //  };
 //  bool _profileSet = false;
 
-  selectImage(BuildContext parentContext) {
+  handleTakePhoto() async {
+    Navigator.pop(context);
+    // ignore: deprecated_member_use
+    File file = await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 675,
+      maxWidth: 960,
+    );
+    setState(() {
+      this.file = file;
+    });
+  }
+
+  handleChooseFromGallery() async {
+    Navigator.pop(context);
+    File file =
+    // ignore: deprecated_member_use
+    await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      this.file = file;
+    });
+  }
+
+  selectImage(parentContext) {
     return showDialog(
       context: parentContext,
       builder: (context) {
@@ -69,22 +97,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   ),
                 ],
               ),
-              onPressed: ()async{
-                File temp = await ImageHandler().handleTakePhoto(context);
-                if(temp!=null){
-                setState(() {
-                  this.file = temp;
-                });}
-              },
+              onPressed: handleTakePhoto,
             ),
             SimpleDialogOption(
-              onPressed: ()async{
-                File temp = await ImageHandler().handleChooseFromGallery(context);
-                if(temp != null){
-                setState(() {
-                  this.file = temp;
-                });}
-                },
+              onPressed: handleChooseFromGallery,
               child: Row(
                 children: <Widget>[
                   Icon(
@@ -121,6 +137,17 @@ class _PersonalDetailsState extends State<PersonalDetails> {
     );
   }
 
+  compressImage() async {
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$myNumber.jpg')
+      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
+    setState(() {
+      file = compressedImageFile;
+    });
+  }
+
   Widget _getProfilePic() {
     return Material(
       elevation: 10,
@@ -139,6 +166,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           ),
           onTap: () {
               selectImage(context);
+              setState(() {
+                file =null;
+              });
           },
         ),
       ),
@@ -422,7 +452,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   print(_emailId);
                   print(_sex);
                   print(_dateOfBirth);
-
+                  Provider.of<TeacherAllDetails>(context,listen: false).changePersonalDetail(file, _firstName, _lastName, _popularName, _emailId, _dateOfBirth, _sex);
                   Navigator.of(context).pushReplacementNamed(ProfessionalDetails.routeName);
                 },
               ),
@@ -434,5 +464,57 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         ),
       ),
     );
+  }
+}
+
+class TeacherAllDetails extends ChangeNotifier{
+  File profileImgFile;
+  String firstName;
+  String lastName;
+  String popularName;
+  String emailId;
+  DateTime dateOfBirth;
+  int sex = 0;// 0 - male 1 - female 2 - other
+  String educationalDetails;
+  int experience;
+  List<SubjectObject> subjects=[];
+  int minFees,maxFees;
+  String description;
+  bool homeTutor;
+  String mobileNo;
+  String address,landmark,city,state,country,pincode;
+
+
+
+
+  void changePersonalDetail (File profilePic,String fName,String lName,String pName,String email,DateTime dob,int s){
+    profileImgFile = profilePic;
+    firstName = fName;
+    lastName = lName;
+    popularName = pName;
+    emailId = email;
+    dateOfBirth = dob;
+    sex =s;
+    notifyListeners();
+  }
+  void changeAddressDetail(String mNo,String add,String land,String c,String s,String con,String pin){
+    mobileNo = mNo;
+    address =add;
+    landmark =land;
+    city = c;
+    country = con;
+    state =s;
+    pincode = pin;
+    notifyListeners();
+  }
+  void changeProfessionalDetail(String eDetails,String des,int mFees,int maxF,int e,List<SubjectObject> sub,bool hTutor){
+    educationalDetails =eDetails;
+    homeTutor = hTutor;
+    description =des;
+    minFees = mFees;
+    maxFees = maxF;
+    experience =e;
+    subjects = sub;
+    notifyListeners();
   }
 }

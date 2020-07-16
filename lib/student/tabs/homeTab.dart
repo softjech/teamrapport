@@ -11,6 +11,17 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+/*
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
+    } catch (e) {
+      print(e);
+    }
+  }
+*/
+
   @override
   Widget build(BuildContext context) {
     //String studentName =Provider.of<Data>(context,listen: false).myRealData[1];
@@ -23,11 +34,13 @@ class _HomeTabState extends State<HomeTab> {
             height: size.height * 0.02,
           ),
           Consumer<Data>(
-            builder:(_,studentName,__)=> Text(
-              'Hello, ' + studentName.myRealData[1].toString(),
+            builder:(_,studentName,__){
+              String name = studentName.myRealData.length == 0 ? ' ' :studentName.myRealData[1].toString();
+              return Text(
+              'Hello, ' + name,
               style:
               heading1.copyWith(fontSize: 28, fontWeight: FontWeight.w700),
-            ),
+            );}
           ),
         ],
       ),

@@ -1,15 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:teamrapport/imageHandler/imageHandler.dart';
+import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
 import 'package:teamrapport/teacher/teacherHome.dart';
 import 'package:teamrapport/teacher/teacherVerification.dart';
 
+import '../../checkUser.dart';
 import '../../constants.dart';
 
 class AddressDetails extends StatefulWidget {
 
   static const String routeName = '/login/checkUser/personalDetails/professionalDetails/addressDetails';
 
-  String _addressDetails;
-  String _landmark;
 
   @override
   _AddressDetailsState createState() => _AddressDetailsState();
@@ -17,9 +22,12 @@ class AddressDetails extends StatefulWidget {
 
 class _AddressDetailsState extends State<AddressDetails> {
 
-  bool _isHomeTutor = true; //This data is taken from ProfessionalDetails()
+  //bool _isHomeTutor = true; //This data is taken from ProfessionalDetails()
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  bool isLoading = false;
+  String _addressDetails;
+  String _landmark;
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
@@ -38,7 +46,7 @@ class _AddressDetailsState extends State<AddressDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._addressDetails = value;
+        _addressDetails = value;
       },
     );
   }
@@ -53,11 +61,10 @@ class _AddressDetailsState extends State<AddressDetails> {
         return null;
       },
       onSaved: (String value) {
-        widget._addressDetails = value;
+        _addressDetails = value;
       },
     );
   }
-
   Widget _buildMobileNumber() {
     return myFromField(
       label: 'Mobile Number',
@@ -73,7 +80,6 @@ class _AddressDetailsState extends State<AddressDetails> {
       },
     );
   }
-
   Widget _buildCountry() {
     return myFromField(
       label: 'Country',
@@ -87,7 +93,6 @@ class _AddressDetailsState extends State<AddressDetails> {
       },
     );
   }
-
   Widget _buildState() {
     return myFromField(
       label: 'State',
@@ -101,7 +106,6 @@ class _AddressDetailsState extends State<AddressDetails> {
       },
     );
   }
-
   Widget _buildCity() {
     return myFromField(
       label: 'City',
@@ -115,7 +119,6 @@ class _AddressDetailsState extends State<AddressDetails> {
       },
     );
   }
-
   Widget _buildPincode() {
     return myFromField(
       label: 'PIN Code',
@@ -128,6 +131,72 @@ class _AddressDetailsState extends State<AddressDetails> {
         return null;
       },
     );
+  }
+
+  @override
+  void initState() {
+    getUserLocation();
+    mobileNoController.text = myNumber;
+    super.initState();
+  }
+
+  Future<void> getUserLocation() async {
+    try {
+      GeolocationStatus geolocationStatus =
+      await Geolocator().checkGeolocationPermissionStatus();
+      print(geolocationStatus);
+      Position position = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placeMarks = await Geolocator()
+          .placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark placeMark = placeMarks[0];
+      countryController.text = placeMark.subLocality;
+      cityController.text = placeMark.subAdministrativeArea;
+      stateController.text = placeMark.administrativeArea;
+      pincodeController.text = placeMark.postalCode;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  createFirebase(TeacherAllDetails data) async {
+    String profileUrl = '';
+    setState(() {
+      isLoading = true;
+    });
+    if (data.profileImgFile != null) {
+      profileUrl = await ImageHandler().handleImage(data.profileImgFile,'profilePic');
+    }
+    DocumentReference docRef = usersRef.document(myNumber);
+    await docRef.setData({
+      'isTeacher': 'true',
+      'homeTutor':data.homeTutor.toString(),
+      'firstName': data.firstName,
+      'lastName': data.lastName,
+      'Name': data.firstName + ' ' + data.lastName,
+      'popularName':data.popularName,
+      'profilePic': profileUrl,
+      'mobileNumber': myNumber,
+      'email': data.emailId,
+      'dob':data.dateOfBirth.toString(),
+      'sex':data.sex,
+      'education':data.educationalDetails,
+      'experience':data.experience,
+      'minFees':data.minFees,
+      'maxFees':data.maxFees,
+      'description':data.description,
+      'address':_addressDetails,
+      'landmark':_landmark,
+      'country': countryController.text,
+      'state': stateController.text,
+      'city': cityController.text,
+      'pincode': pincodeController.text,
+      'subject':data.subjects,
+    });
+    //SharedPrefFunction().saveUserData(myNumber, myData);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -179,7 +248,7 @@ class _AddressDetailsState extends State<AddressDetails> {
               ),
               FlatButton.icon(
                 onPressed: () {
-                  //getUserLocation();
+                  getUserLocation();
                 },
                 icon: Icon(
                   Icons.my_location,
@@ -195,24 +264,27 @@ class _AddressDetailsState extends State<AddressDetails> {
               SizedBox(
                 height: 30,
               ),
-              myRaisedButton(
-                label: 'Next',
-                onPressed: () {
-                  if (!_formKey.currentState.validate()) {
-                    return;
-                  }
-                  _formKey.currentState.save();
+              Consumer<TeacherAllDetails>(
+                builder:(_,value,__)=> myRaisedButton(
+                  label: 'Next',
+                  onPressed: () {
+                    if (!_formKey.currentState.validate()) {
+                      return;
+                    }
+                    _formKey.currentState.save();
 //                  print(widget._firstName + " " + widget._lastName);
 //                  print(widget._popularName);
 //                  print(widget._emailId);
 //                  print(widget._sex);
-//                  print(widget._aadharNumber);
-                  if(_isHomeTutor){
-                    Navigator.of(context).pushReplacementNamed(TeacherVerification.routeName);
-                  }else{
-                    Navigator.of(context).pushReplacementNamed(TeacherHomeScreen.routeName);
-                  }
-                },
+                    Provider.of<TeacherAllDetails>(context,listen: false).changeAddressDetail(mobileNoController.text,_addressDetails, _landmark, countryController.text, stateController.text,countryController.text, pincodeController.text);
+                    if(value.homeTutor){
+                      Navigator.of(context).pushReplacementNamed(TeacherVerification.routeName);
+                    }else{
+                      createFirebase(value);
+                      Navigator.of(context).pushReplacementNamed(TeacherHomeScreen.routeName);
+                    }
+                  },
+                ),
               ),
             ],
           ),

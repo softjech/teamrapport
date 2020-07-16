@@ -43,5 +43,4 @@ const subjectData = <SubjectObject>[
   SubjectObject('20', 'DBMS'),
   SubjectObject('21', 'Botany'),
   SubjectObject('22', 'Zoology'),
-  SubjectObject('23', 'Python'),
 ];

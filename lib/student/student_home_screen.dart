@@ -5,7 +5,6 @@ import 'package:teamrapport/student/tabs/homeTab.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   static const routeName = '/onboarding/login/student/studentHomeScreen';
-
   @override
   _StudentHomeState createState() => _StudentHomeState();
 }
