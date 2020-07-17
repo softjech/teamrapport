@@ -1,3 +1,7 @@
+/*
+        Some code have been removed because of some security purpose.
+* */
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,10 +13,6 @@ import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/teacher/teacherHome.dart';
 
 import '../constants.dart';
-
-
-final verificationRef = Firestore.instance.collection('aadharVerification');
-
 
 class TeacherVerification extends StatefulWidget {
   static const String routeName =
@@ -29,9 +29,8 @@ class TeacherVerification extends StatefulWidget {
 class _TeacherVerificationState extends State<TeacherVerification> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int _aadharNumber;
-  File front,back;
+  File front, back;
   bool isLoading = false;
-
 
   handleTakePhoto(String title) async {
     Navigator.pop(context);
@@ -42,21 +41,21 @@ class _TeacherVerificationState extends State<TeacherVerification> {
       maxWidth: 960,
     );
     setState(() {
-      title=='front' ? this.front = file:this.back = file;
+      title == 'front' ? this.front = file : this.back = file;
     });
   }
 
   handleChooseFromGallery(String title) async {
     Navigator.pop(context);
     File file =
-    // ignore: deprecated_member_use
-    await ImagePicker.pickImage(source: ImageSource.gallery);
+        // ignore: deprecated_member_use
+        await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
-      title=='front' ? this.front = file:this.back = file;
+      title == 'front' ? this.front = file : this.back = file;
     });
   }
 
-  selectImage(parentContext,String title) {
+  selectImage(parentContext, String title) {
     return showDialog(
       context: parentContext,
       builder: (context) {
@@ -91,11 +90,12 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                   ),
                 ],
               ),
-              onPressed: (){
-                handleTakePhoto(title);},
+              onPressed: () {
+                handleTakePhoto(title);
+              },
             ),
             SimpleDialogOption(
-              onPressed: (){
+              onPressed: () {
                 handleChooseFromGallery(title);
               },
               child: Row(
@@ -135,29 +135,16 @@ class _TeacherVerificationState extends State<TeacherVerification> {
   }
 
   createFirebase() async {
-    String frontUrl=' ';
-    String backUrl=' ';
+    String frontUrl = ' ';
+    String backUrl = ' ';
     setState(() {
       isLoading = true;
-    });
-    if (front != null) {
-      frontUrl = await ImageHandler().handleImage(front,'aadharFront');
-      if(back != null) {
-        backUrl = await ImageHandler().handleImage(back, 'aadharBack');
-      }
-    }
-    DocumentReference docRef = verificationRef.document(myNumber);
-    await docRef.setData({
-      'aadharNo':_aadharNumber,
-      'aadharFrontUrl':frontUrl,
-      'aadharBackUrl':backUrl,
     });
     Navigator.of(context).pushReplacementNamed(TeacherHomeScreen.routeName);
     setState(() {
       isLoading = false;
     });
   }
-
 
   Widget _buildAadhar() {
     return Padding(
@@ -204,7 +191,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.black38)),
               child: front != null
-                  ? Image(image:FileImage(front))
+                  ? Image(image: FileImage(front))
                   : Image.asset(
                       'assets/images/aadhar_placeholder_front.png',
                       fit: BoxFit.cover,
@@ -233,7 +220,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.black38)),
               child: back != null
-                  ? Image(image:FileImage(back))
+                  ? Image(image: FileImage(back))
                   : Image.asset(
                       'assets/images/aadhar_placeholder_back.png',
                       fit: BoxFit.cover,
@@ -247,70 +234,72 @@ class _TeacherVerificationState extends State<TeacherVerification> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? circularProgress() : Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'Verification',
-          style: heading1.copyWith(fontSize: 24),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            //crossAxisAlignment: CrossAxisAlignment.center,
-            shrinkWrap: true,
-            children: <Widget>[
-              SizedBox(
-                height: 40,
+    return isLoading
+        ? circularProgress()
+        : Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: Text(
+                'Verification',
+                style: heading1.copyWith(fontSize: 24),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  'As per our policy you need to verify yourself by providing your Aadhar card details. Read here',
-                  style: subhead2,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              _buildAadhar(),
-              _buildAadharImage(),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  'Rapport will never share your Aadhar card details to any of its users or third party platforms.',
-                  style: subhead2.copyWith(color: Colors.redAccent),
-                ),
-              ),
+            ),
+            backgroundColor: Colors.white,
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'As per our policy you need to verify yourself by providing your Aadhar card details. Read here',
+                        style: subhead2,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buildAadhar(),
+                    _buildAadharImage(),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'Rapport will never share your Aadhar card details to any of its users or third party platforms.',
+                        style: subhead2.copyWith(color: Colors.redAccent),
+                      ),
+                    ),
 
-              //-------End of form-------
-              SizedBox(
-                height: 30,
-              ),
-              myRaisedButton(
-                label: 'Next',
-                onPressed: () {
-                  if (!_formKey.currentState.validate()) {
-                    return;
-                  }
-                  _formKey.currentState.save();
-                  createFirebase();
+                    //-------End of form-------
+                    SizedBox(
+                      height: 30,
+                    ),
+                    myRaisedButton(
+                      label: 'Next',
+                      onPressed: () {
+                        if (!_formKey.currentState.validate()) {
+                          return;
+                        }
+                        _formKey.currentState.save();
+                        createFirebase();
 //                  print(widget._firstName + " " + widget._lastName);
 //                  print(widget._popularName);
 //                  print(widget._emailId);
 //                  print(widget._sex);
 //                  print(widget._aadharNumber);
-                },
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/services/auth.dart';
 import '../constants.dart';
 
@@ -259,7 +258,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   //width: 200,
                   child: FlatButton(
                     onPressed: () {
-                      final auth =Provider.of<AuthBase>(context,listen: false);
+                      final auth =
+                          Provider.of<AuthBase>(context, listen: false);
                       print('CodeSent' + codeSent.toString());
                       codeSent
                           ? auth.signInWithOtp(code.text, otp, context)
@@ -287,10 +287,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> verify(phoneNo) async {
     phoneNo = '+91' + phoneNo;
     myNumber = phoneNo;
-    SharedPrefFunction().saveNumberPreference(myNumber);
 
     final PhoneVerificationCompleted verified = (AuthCredential authResult) {
-      final auth = Provider.of<AuthBase>(context,listen: false);
+      final auth = Provider.of<AuthBase>(context, listen: false);
       auth.signIn(authResult);
     };
     final PhoneVerificationFailed verificationFailed =

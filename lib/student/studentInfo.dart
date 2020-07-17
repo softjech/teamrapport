@@ -1,3 +1,7 @@
+/*
+        Some code have been removed because of some security purpose.
+* */
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:teamrapport/loading/progress.dart';
 import 'package:teamrapport/login/loginScreen.dart';
-import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import '../checkUser.dart';
 import '../constants.dart';
 import 'student_home_screen.dart';
@@ -222,7 +225,6 @@ class _StudentInfoState extends State<StudentInfo> {
       'city': cityController.text,
       'pincode': pincodeController.text,
     });
-    SharedPrefFunction().saveUserData(myNumber, myData);
     setState(() {
       isLoading = false;
       file = null;

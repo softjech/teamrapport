@@ -1,3 +1,7 @@
+/*
+        Some code have been removed because of some security purpose.
+* */
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,17 +10,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/login/loginScreen.dart';
-import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
 import 'package:teamrapport/widgets/boxWidget.dart';
 import 'loading/progress.dart';
 import 'student/student_home_screen.dart';
 
-final usersRef = Firestore.instance.collection('users');
-final StorageReference storageRef = FirebaseStorage.instance.ref();
 bool isLoading = true;
 bool dataExists = false;
-
 
 class CheckUser extends StatefulWidget {
   static const String checkRoute = '/login/checkUser';
@@ -32,7 +32,6 @@ class _CheckUserState extends State<CheckUser> {
   }
 
   checkUser() async {
-    myNumber = await SharedPrefFunction().getNumberPreference();
     DocumentSnapshot doc = await usersRef.document(myNumber).get();
     if (doc.exists) {
       setState(() {
@@ -63,7 +62,8 @@ class _CheckUserState extends State<CheckUser> {
                   onPressed: () {
                     setState(() {
                       Navigator.of(context).pushReplacementNamed(
-                        StudentHomeScreen.routeName,   //This line is changed by me. This code is not correct and needs to be changed.
+                        StudentHomeScreen
+                            .routeName, //This line is changed by me. This code is not correct and needs to be changed.
                       );
                     });
                   },

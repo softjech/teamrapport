@@ -1,3 +1,7 @@
+/*
+        Some code have been removed because of some security purpose.
+* */
+
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +10,6 @@ import 'package:teamrapport/landing_page.dart';
 import 'package:teamrapport/services/auth.dart';
 import 'package:teamrapport/student/studentInfo.dart';
 import 'package:teamrapport/checkUser.dart';
-import 'package:teamrapport/saveDataLocally/sharedPrefFunctions.dart';
 import 'package:teamrapport/teacher/details_pages/addressDetails.dart';
 import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
 import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
@@ -17,19 +20,29 @@ import 'login/loginScreen.dart';
 import 'student/student_home_screen.dart';
 
 void main() {
-
-  runApp(MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
-        ChangeNotifierProvider<Data>(create: (_)=>Data(),),
-        Provider<AuthBase>(create: (context)=>Auth(),),
-        ChangeNotifierProvider<TeacherAllDetails>(create: (context)=>TeacherAllDetails(),)
+        ChangeNotifierProvider<Data>(
+          create: (_) => Data(),
+        ),
+        Provider<AuthBase>(
+          create: (context) => Auth(),
+        ),
+        ChangeNotifierProvider<TeacherAllDetails>(
+          create: (context) => TeacherAllDetails(),
+        )
       ],
-      child: MyApp(),),);
+      child: MyApp(),
+    ),
+  );
 }
 
-String isLogin=' '; // ' ' it is necessary so that error will not occur because of null value
+String isLogin =
+    ' '; // ' ' it is necessary so that error will not occur because of null value
 String teacher = 'false';
 List<String> myData = [];
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -38,30 +51,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    getDetail();
+    // getDetail();
     super.initState();
-  }
-
-  getDetail() async {
-    List<String> data=[];
-    String res = await SharedPrefFunction().getLoginPreference();
-    if(res=='true'){
-      String number = await SharedPrefFunction().getNumberPreference();
-       data = await SharedPrefFunction().getUserData(number);
-       print(data.toString()+'Hello');
-       if(data != null){
-       Provider.of<Data>(context,listen: false).changeMyData(data);}
-    }
-    setState(() {
-      isLogin = res;
-      if(data != null){
-        print(data.toString() + 'Hello ');
-        myData = data;
-      if(data.length != 0 ){
-      if(data[0]=='true'){
-        teacher  = 'true';
-      }}}
-    });
   }
 
   @override
@@ -113,22 +104,7 @@ class _MyAppState extends State<MyApp> {
           return SplashScreen.navigate(
             name: 'assets/splash.flr',
             next: (context) {
-              print(isLogin.toString());
-              if(isLogin == null){
-                return OnboardingScreen();
-              }
-              else if(isLogin == 'true'){
-                if(myData.length == 0){
-                  return CheckUser();
-                }
-                if(teacher=='true'){
-                return TeacherHomeScreen();}
-                else{
-                  return StudentHomeScreen();
-                }
-              }
-              else{
-              return LandingPage();}
+              return LandingPage();
             },
             startAnimation: 'Untitled',
             until: () => Future.delayed(Duration(seconds: 4)),
@@ -139,23 +115,21 @@ class _MyAppState extends State<MyApp> {
         CheckUser.checkRoute: (ctx) => CheckUser(),
         OnboardingScreen.onBoardRoute: (ctx) => OnboardingScreen(),
         StudentInfo.studentRoute: (ctx) => StudentInfo(),
-        PersonalDetails.routeName:(ctx) => PersonalDetails(),
-        ProfessionalDetails.routeName:(ctx) => ProfessionalDetails(),
+        PersonalDetails.routeName: (ctx) => PersonalDetails(),
+        ProfessionalDetails.routeName: (ctx) => ProfessionalDetails(),
         AddressDetails.routeName: (ctx) => AddressDetails(),
-        TeacherHomeScreen.routeName:(ctx)=>TeacherHomeScreen(),
-        TeacherVerification.routeName:(ctx)=>TeacherVerification(),
-        StudentHomeScreen.routeName : (ctx)=>StudentHomeScreen(),
+        TeacherHomeScreen.routeName: (ctx) => TeacherHomeScreen(),
+        TeacherVerification.routeName: (ctx) => TeacherVerification(),
+        StudentHomeScreen.routeName: (ctx) => StudentHomeScreen(),
       },
     );
   }
 }
 
-
-class Data extends ChangeNotifier{
+class Data extends ChangeNotifier {
   List<String> myRealData = [];
-  void changeMyData (List<String> value){
+  void changeMyData(List<String> value) {
     myRealData = value;
     notifyListeners();
   }
 }
-

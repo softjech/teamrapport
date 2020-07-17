@@ -1,3 +1,7 @@
+/*
+        Some code have been removed because of some security purpose.
+* */
+
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 
 class PersonalDetails extends StatefulWidget {
-
   static const String routeName = '/login/checkUser/personalDetails';
-
 
   @override
   _PersonalDetailsState createState() => _PersonalDetailsState();
@@ -51,8 +53,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   handleChooseFromGallery() async {
     Navigator.pop(context);
     File file =
-    // ignore: deprecated_member_use
-    await ImagePicker.pickImage(source: ImageSource.gallery);
+        // ignore: deprecated_member_use
+        await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       this.file = file;
     });
@@ -141,7 +143,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       child: Center(
         child: GestureDetector(
           child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width *0.15,
+            radius: MediaQuery.of(context).size.width * 0.15,
             backgroundImage: file != null
                 ? FileImage(file)
                 : AssetImage(
@@ -150,10 +152,10 @@ class _PersonalDetailsState extends State<PersonalDetails> {
             backgroundColor: Colors.transparent,
           ),
           onTap: () {
-              selectImage(context);
-              setState(() {
-                file =null;
-              });
+            selectImage(context);
+            setState(() {
+              file = null;
+            });
           },
         ),
       ),
@@ -329,9 +331,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   onTap: () {
                     showDatePicker(
                       context: context,
-                      initialDate: _dateOfBirth == null
-                          ? DateTime.now()
-                          : _dateOfBirth,
+                      initialDate:
+                          _dateOfBirth == null ? DateTime.now() : _dateOfBirth,
                       firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
                     ).then((value) {
@@ -349,8 +350,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                     child: Center(
                       child: Text(
                         _dateOfBirth != null
-                            ? DateFormat('dd-MM-yyyy')
-                                .format(_dateOfBirth)
+                            ? DateFormat('dd-MM-yyyy').format(_dateOfBirth)
                             : 'Select date',
                         style: subhead2.copyWith(fontSize: 16),
                       ),
@@ -360,19 +360,18 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               ),
             ],
           ),
-          _dateError !=null ? Text(
-            _dateError,
-            style: subhead1.copyWith(
-              color: Colors.redAccent,
-            ),
-          ):
-          Container(),
+          _dateError != null
+              ? Text(
+                  _dateError,
+                  style: subhead1.copyWith(
+                    color: Colors.redAccent,
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +418,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               SizedBox(
                 height: 30,
               ),
-
               myRaisedButton(
                 label: 'Next',
                 onPressed: () {
@@ -437,8 +435,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                   print(_emailId);
                   print(_sex);
                   print(_dateOfBirth);
-                  Provider.of<TeacherAllDetails>(context,listen: false).changePersonalDetail(file, _firstName, _lastName, _popularName, _emailId, _dateOfBirth, _sex);
-                  Navigator.of(context).pushReplacementNamed(ProfessionalDetails.routeName);
+                  Provider.of<TeacherAllDetails>(context, listen: false)
+                      .changePersonalDetail(file, _firstName, _lastName,
+                          _popularName, _emailId, _dateOfBirth, _sex);
+                  Navigator.of(context)
+                      .pushReplacementNamed(ProfessionalDetails.routeName);
                 },
               ),
               SizedBox(
@@ -452,54 +453,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
   }
 }
 
-class TeacherAllDetails extends ChangeNotifier{
-  File profileImgFile;
-  String firstName;
-  String lastName;
-  String popularName;
-  String emailId;
-  DateTime dateOfBirth;
-  int sex = 0;// 0 - male 1 - female 2 - other
-  String educationalDetails;
-  int experience;
-  List<String> subjects=[];
-  int minFees,maxFees;
-  String description;
-  bool homeTutor;
-  String mobileNo;
-  String address,landmark,city,state,country,pincode;
-
-
-
-
-  void changePersonalDetail (File profilePic,String fName,String lName,String pName,String email,DateTime dob,int s){
-    profileImgFile = profilePic;
-    firstName = fName;
-    lastName = lName;
-    popularName = pName;
-    emailId = email;
-    dateOfBirth = dob;
-    sex =s;
-    notifyListeners();
-  }
-  void changeAddressDetail(String mNo,String add,String land,String c,String s,String con,String pin){
-    mobileNo = mNo;
-    address =add;
-    landmark =land;
-    city = c;
-    country = con;
-    state =s;
-    pincode = pin;
-    notifyListeners();
-  }
-  void changeProfessionalDetail(String eDetails,String des,int mFees,int maxF,int e,List<String> sub,bool hTutor){
-    educationalDetails =eDetails;
-    homeTutor = hTutor;
-    description =des;
-    minFees = mFees;
-    maxFees = maxF;
-    experience =e;
-    subjects = sub;
-    notifyListeners();
-  }
+class TeacherAllDetails extends ChangeNotifier {
+  void changePersonalDetail(File profilePic, String fName, String lName,
+      String pName, String email, DateTime dob, int s) {}
+  void changeAddressDetail(String mNo, String add, String land, String c,
+      String s, String con, String pin) {}
+  void changeProfessionalDetail(String eDetails, String des, int mFees,
+      int maxF, int e, List<String> sub, bool hTutor) {}
 }
