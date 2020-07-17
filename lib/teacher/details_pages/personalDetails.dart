@@ -2,13 +2,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:teamrapport/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:image/image.dart' as Im;
-import 'package:teamrapport/login/loginScreen.dart';
-import 'package:teamrapport/models/subjectData.dart';
 import 'package:teamrapport/teacher/details_pages/professionalDetails.dart';
 
 class PersonalDetails extends StatefulWidget {
@@ -135,17 +131,6 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         );
       },
     );
-  }
-
-  compressImage() async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$myNumber.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 85));
-    setState(() {
-      file = compressedImageFile;
-    });
   }
 
   Widget _getProfilePic() {
@@ -477,7 +462,7 @@ class TeacherAllDetails extends ChangeNotifier{
   int sex = 0;// 0 - male 1 - female 2 - other
   String educationalDetails;
   int experience;
-  List<SubjectObject> subjects=[];
+  List<String> subjects=[];
   int minFees,maxFees;
   String description;
   bool homeTutor;
@@ -507,7 +492,7 @@ class TeacherAllDetails extends ChangeNotifier{
     pincode = pin;
     notifyListeners();
   }
-  void changeProfessionalDetail(String eDetails,String des,int mFees,int maxF,int e,List<SubjectObject> sub,bool hTutor){
+  void changeProfessionalDetail(String eDetails,String des,int mFees,int maxF,int e,List<String> sub,bool hTutor){
     educationalDetails =eDetails;
     homeTutor = hTutor;
     description =des;

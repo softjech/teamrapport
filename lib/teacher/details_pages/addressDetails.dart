@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:teamrapport/imageHandler/imageHandler.dart';
+import 'package:teamrapport/loading/progress.dart';
 import 'package:teamrapport/login/loginScreen.dart';
 import 'package:teamrapport/teacher/details_pages/personalDetails.dart';
 import 'package:teamrapport/teacher/teacherHome.dart';
@@ -11,11 +12,11 @@ import 'package:teamrapport/teacher/teacherVerification.dart';
 import '../../checkUser.dart';
 import '../../constants.dart';
 
+
+
 class AddressDetails extends StatefulWidget {
 
   static const String routeName = '/login/checkUser/personalDetails/professionalDetails/addressDetails';
-
-
   @override
   _AddressDetailsState createState() => _AddressDetailsState();
 }
@@ -27,7 +28,7 @@ class _AddressDetailsState extends State<AddressDetails> {
 
   bool isLoading = false;
   String _addressDetails;
-  String _landmark;
+  TextEditingController landmarkController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
@@ -53,15 +54,13 @@ class _AddressDetailsState extends State<AddressDetails> {
   Widget _buildLandmark() {
     return myFromField(
       label: 'Landmark',
+      controller: landmarkController,
       hint: 'New Delhi Railway Station.',
       validator: (String value) {
         if (value.isEmpty) {
           return 'Landmark is required.';
         }
         return null;
-      },
-      onSaved: (String value) {
-        _addressDetails = value;
       },
     );
   }
@@ -150,7 +149,8 @@ class _AddressDetailsState extends State<AddressDetails> {
       List<Placemark> placeMarks = await Geolocator()
           .placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark placeMark = placeMarks[0];
-      countryController.text = placeMark.subLocality;
+      landmarkController.text = placeMark.subLocality;
+      countryController.text = placeMark.country;
       cityController.text = placeMark.subAdministrativeArea;
       stateController.text = placeMark.administrativeArea;
       pincodeController.text = placeMark.postalCode;
@@ -159,7 +159,7 @@ class _AddressDetailsState extends State<AddressDetails> {
     }
   }
 
-  createFirebase(TeacherAllDetails data) async {
+  createFirebase(TeacherAllDetails data,String route) async {
     String profileUrl = '';
     setState(() {
       isLoading = true;
@@ -186,7 +186,7 @@ class _AddressDetailsState extends State<AddressDetails> {
       'maxFees':data.maxFees,
       'description':data.description,
       'address':_addressDetails,
-      'landmark':_landmark,
+      'landmark':landmarkController.text,
       'country': countryController.text,
       'state': stateController.text,
       'city': cityController.text,
@@ -197,12 +197,13 @@ class _AddressDetailsState extends State<AddressDetails> {
     setState(() {
       isLoading = false;
     });
+    Navigator.of(context).pushReplacementNamed(route);
   }
 
   @override
   Widget build(BuildContext context) {
     //var size = MediaQuery.of(context).size;
-    return Scaffold(
+    return isLoading ? circularProgress():Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -276,12 +277,11 @@ class _AddressDetailsState extends State<AddressDetails> {
 //                  print(widget._popularName);
 //                  print(widget._emailId);
 //                  print(widget._sex);
-                    Provider.of<TeacherAllDetails>(context,listen: false).changeAddressDetail(mobileNoController.text,_addressDetails, _landmark, countryController.text, stateController.text,countryController.text, pincodeController.text);
+                    Provider.of<TeacherAllDetails>(context,listen: false).changeAddressDetail(mobileNoController.text,_addressDetails, landmarkController.text, countryController.text, stateController.text,countryController.text, pincodeController.text);
                     if(value.homeTutor){
-                      Navigator.of(context).pushReplacementNamed(TeacherVerification.routeName);
+                      createFirebase(value, TeacherVerification.routeName);
                     }else{
-                      createFirebase(value);
-                      Navigator.of(context).pushReplacementNamed(TeacherHomeScreen.routeName);
+                      createFirebase(value,TeacherHomeScreen.routeName);
                     }
                   },
                 ),

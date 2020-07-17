@@ -1,12 +1,22 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:teamrapport/imageHandler/imageHandler.dart';
+import 'package:teamrapport/loading/progress.dart';
+import 'package:teamrapport/login/loginScreen.dart';
+import 'package:teamrapport/teacher/teacherHome.dart';
 
 import '../constants.dart';
+
+
+final verificationRef = Firestore.instance.collection('aadharVerification');
+
 
 class TeacherVerification extends StatefulWidget {
   static const String routeName =
       '/login/checkUser/personalDetails/professionalDetails/addressDetails/teacherVerification';
-
-  int _aadharNumber;
 
   @override
   _TeacherVerificationState createState() => _TeacherVerificationState();
@@ -18,9 +28,136 @@ class TeacherVerification extends StatefulWidget {
 
 class _TeacherVerificationState extends State<TeacherVerification> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  int _aadharNumber;
+  File front,back;
+  bool isLoading = false;
 
-  bool _frontImage = false;
-  bool _backImage = false;
+
+  handleTakePhoto(String title) async {
+    Navigator.pop(context);
+    // ignore: deprecated_member_use
+    File file = await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 675,
+      maxWidth: 960,
+    );
+    setState(() {
+      title=='front' ? this.front = file:this.back = file;
+    });
+  }
+
+  handleChooseFromGallery(String title) async {
+    Navigator.pop(context);
+    File file =
+    // ignore: deprecated_member_use
+    await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      title=='front' ? this.front = file:this.back = file;
+    });
+  }
+
+  selectImage(parentContext,String title) {
+    return showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          elevation: 50,
+          backgroundColor: Colors.white,
+          //contentPadding: EdgeInsets.all(20.0),
+          titlePadding: EdgeInsets.all(20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: Center(
+            child: Text(
+              'Upload Profile Picture',
+              style: heading2,
+            ),
+          ),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.camera_alt,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    'From Camera',
+                    style: subhead2,
+                  ),
+                ],
+              ),
+              onPressed: (){
+                handleTakePhoto(title);},
+            ),
+            SimpleDialogOption(
+              onPressed: (){
+                handleChooseFromGallery(title);
+              },
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.image,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    'From Gallery',
+                    style: subhead2,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 30,
+              alignment: Alignment.center,
+              child: GestureDetector(
+                child: Text(
+                  'Cancel',
+                  style: subhead2.copyWith(
+                    fontSize: 14,
+                    color: themeColor,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  createFirebase() async {
+    String frontUrl=' ';
+    String backUrl=' ';
+    setState(() {
+      isLoading = true;
+    });
+    if (front != null) {
+      frontUrl = await ImageHandler().handleImage(front,'aadharFront');
+      if(back != null) {
+        backUrl = await ImageHandler().handleImage(back, 'aadharBack');
+      }
+    }
+    DocumentReference docRef = verificationRef.document(myNumber);
+    await docRef.setData({
+      'aadharNo':_aadharNumber,
+      'aadharFrontUrl':frontUrl,
+      'aadharBackUrl':backUrl,
+    });
+    Navigator.of(context).pushReplacementNamed(TeacherHomeScreen.routeName);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
 
   Widget _buildAadhar() {
     return Padding(
@@ -36,7 +173,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
           return null;
         },
         onSaved: (String value) {
-          widget._aadharNumber = int.tryParse(value);
+          _aadharNumber = int.tryParse(value);
         },
       ),
     );
@@ -57,7 +194,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
           ),
           GestureDetector(
             onTap: () {
-              //Implement accepting image
+              selectImage(context, 'front');
             },
             child: Container(
               padding: const EdgeInsets.all(8.9),
@@ -66,11 +203,8 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.black38)),
-              child: _frontImage
-                  ? Image.network(
-                      'blablabla',
-                      fit: BoxFit.cover,
-                    )
+              child: front != null
+                  ? Image(image:FileImage(front))
                   : Image.asset(
                       'assets/images/aadhar_placeholder_front.png',
                       fit: BoxFit.cover,
@@ -89,7 +223,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
           ),
           GestureDetector(
             onTap: () {
-              //Implement accepting image
+              selectImage(context, 'back');
             },
             child: Container(
               padding: const EdgeInsets.all(8.9),
@@ -98,11 +232,8 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.black38)),
-              child: _frontImage
-                  ? Image.network(
-                      'blablabla',
-                      fit: BoxFit.cover,
-                    )
+              child: back != null
+                  ? Image(image:FileImage(back))
                   : Image.asset(
                       'assets/images/aadhar_placeholder_back.png',
                       fit: BoxFit.cover,
@@ -116,7 +247,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoading ? circularProgress() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -168,6 +299,7 @@ class _TeacherVerificationState extends State<TeacherVerification> {
                     return;
                   }
                   _formKey.currentState.save();
+                  createFirebase();
 //                  print(widget._firstName + " " + widget._lastName);
 //                  print(widget._popularName);
 //                  print(widget._emailId);

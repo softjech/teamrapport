@@ -23,6 +23,7 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
   int _feesMin, _feesMax;
   String _description;
   List<SubjectObject> _subjects;
+  List<String> subjectList=[];
   bool _homeTutor = false;
 //  final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
@@ -265,7 +266,10 @@ class _ProfessionalDetailsState extends State<ProfessionalDetails> {
 //                  print(widget._sex);
                   print(_subjects);
                   print(_homeTutor);
-                  Provider.of<TeacherAllDetails>(context,listen:false).changeProfessionalDetail(_educationDetails,_description, _feesMin, _feesMax, _experience, _subjects,_homeTutor);
+                  _subjects.forEach((element){
+                    subjectList.add(element.id);
+                  });
+                  Provider.of<TeacherAllDetails>(context,listen:false).changeProfessionalDetail(_educationDetails,_description, _feesMin, _feesMax, _experience,subjectList,_homeTutor);
                   Navigator.pushReplacementNamed(
                       context, AddressDetails.routeName);
                 },

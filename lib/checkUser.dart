@@ -127,7 +127,7 @@ class _CheckUserState extends State<CheckUser> {
                         BoxWidget(
                           title: 'Teacher',
                           onTap: () {
-                            Navigator.pushNamed(
+                            Navigator.pushReplacementNamed(
                                 /*While developing the teacher details pages
                               change the route below to which you want to edit.
                                */
